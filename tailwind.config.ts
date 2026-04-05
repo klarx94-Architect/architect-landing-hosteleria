@@ -1,4 +1,3 @@
-// architect sys override - implacable
 import type { Config } from "tailwindcss";
 export default {
   content: [
@@ -13,10 +12,6 @@ export default {
         foreground: "#1A1A1A",
         terracotta: "#E07A5F",
         olive: "#81B29A",
-      },
-      fontFamily: {
-        serif: ['var(--font-instrument)'],
-        sans: ['var(--font-dm-sans)'],
       }
     },
   },
