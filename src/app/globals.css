@@ -1,8 +1,5 @@
+/* architect sys override */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  background-color: #FAF9F6;
-  color: #1A1A1A;
-}
+body { background-color: #FAF9F6; color: #1A1A1A; }

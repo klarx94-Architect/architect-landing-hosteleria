@@ -1,3 +1,4 @@
+// architect sys override
 import type { Config } from "tailwindcss";
 export default {
   content: [
