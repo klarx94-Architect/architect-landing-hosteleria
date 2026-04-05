@@ -1,19 +1,33 @@
-import "./globals.css";
 import type { Metadata } from "next";
+import { Instrument_Serif, DM_Sans } from "next/font/google";
+import "./globals.css";
+
+const instrument = Instrument_Serif({ 
+  weight: "400", 
+  subsets: ["latin"],
+  variable: '--font-instrument'
+});
+
+const dmSans = DM_Sans({ 
+  subsets: ["latin"],
+  variable: '--font-dm-sans'
+});
 
 export const metadata: Metadata = {
-  title: "Architect Sys - Soluciones Web para Hostelería",
-  description: "Diseño web orgánico premium y cartas digitales para hostelería.",
+  title: "Architect Sys | Webs Premium para Hostelería",
+  description: "Llenamos tus mesas y automatizamos tus pedidos. Sistemas digitales de autor.",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="es">
-      <body className="antialiased">{children}</body>
+      <body className={`${instrument.variable} ${dmSans.variable} font-sans antialiased bg-background text-foreground`}>
+        {children}
+      </body>
     </html>
   );
 }
