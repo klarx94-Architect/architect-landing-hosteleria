@@ -7,7 +7,7 @@ export default function Home() {
           <div className="text-2xl font-black tracking-tighter text-foreground">
             Architect<span className="text-brand">.Sys</span>
           </div>
-          <a href="https://wa.me/34611499674" className="hidden md:inline-flex bg-foreground text-background px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-gray-800 transition-all shadow-sm">
+          <a href="https://wa.me/34611499674?text=Hola,%20quiero%20solicitar%20la%20Auditoría%20Gratuita%20para%20mi%20negocio." className="hidden md:inline-flex bg-foreground text-background px-6 py-2.5 rounded-full font-semibold text-sm hover:bg-gray-800 transition-all shadow-sm">
             Auditoría Gratuita
           </a>
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
             Transformamos restaurantes tradicionales en máquinas de facturación. Implementamos menús digitales, sistemas de captación y agentes de IA que responden a tus clientes 24/7.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <a href="https://wa.me/34611499674" className="flex items-center justify-center gap-2 bg-brand text-white px-8 py-4 rounded-full text-lg font-bold shadow-float hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+            <a href="https://wa.me/34611499674?text=Hola,%20quiero%20transformar%20mi%20restaurante%20y%20multiplicar%20mis%20reservas." className="flex items-center justify-center gap-2 bg-brand text-white px-8 py-4 rounded-full text-lg font-bold shadow-float hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
               Transformar mi negocio
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
@@ -58,7 +58,7 @@ export default function Home() {
                 <li className="flex items-center gap-3"><span className="text-brand">✓</span> Optimización para Google</li>
                 <li className="flex items-center gap-3"><span className="text-brand">✓</span> Menú autogestionable</li>
               </ul>
-              <a href="https://wa.me/34611499674" className="block text-center w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-colors">Solicitar</a>
+              <a href="https://wa.me/34611499674?text=Hola,%20me%20interesa%20la%20Carta%20Digital%20PRO%20de%20150€." className="block text-center w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-colors">Solicitar</a>
             </div>
 
             {/* TIER 2 - DESTACADO */}
@@ -71,7 +71,7 @@ export default function Home() {
                 <li className="flex items-center gap-3"><span className="text-white font-bold">✓</span> Agente IA (Responde WhatsApp)</li>
                 <li className="flex items-center gap-3"><span className="text-white font-bold">✓</span> Embudo de Captación Local</li>
               </ul>
-              <a href="https://wa.me/34611499674" className="block text-center w-full bg-foreground text-white py-4 rounded-full font-black hover:bg-black transition-colors shadow-lg">Hablar con un experto</a>
+              <a href="https://wa.me/34611499674?text=Hola,%20necesito%20hablar%20con%20un%20experto%20sobre%20el%20Sistema%20de%20Reservas%20IA%20de%20350€." className="block text-center w-full bg-foreground text-white py-4 rounded-full font-black hover:bg-black transition-colors shadow-lg">Hablar con un experto</a>
             </div>
 
             {/* TIER 3 */}
@@ -83,7 +83,7 @@ export default function Home() {
                 <li className="flex items-center gap-3"><span className="text-brand">✓</span> Sistema Delivery Sin Comisiones</li>
                 <li className="flex items-center gap-3"><span className="text-brand">✓</span> Automatización total de cocina</li>
               </ul>
-              <a href="https://wa.me/34611499674" className="block text-center w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-colors">Agendar Consultoría</a>
+              <a href="https://wa.me/34611499674?text=Hola,%20quiero%20agendar%20una%20consultoría%20para%20una%20Dark%20Kitchen." className="block text-center w-full bg-white text-black py-3 rounded-full font-bold hover:bg-gray-200 transition-colors">Agendar Consultoría</a>
             </div>
           </div>
         </div>
