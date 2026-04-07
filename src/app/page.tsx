@@ -135,7 +135,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="order-2 lg:order-1 relative group">
             <div className="aspect-[4/3] bg-gray-900 rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 group-hover:border-[#FF4500]/50 transition-colors duration-500">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000" alt="Dashboard Ads" className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" />
+              <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000" alt="Dashboard Ads" className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-[#FF4500] text-white p-6 rounded-2xl shadow-2xl font-bold text-xl animate-bounce">
               ROI Medible
@@ -233,6 +233,59 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* TRUST BANNER: INTEGRATIONS */}
+      <section className="bg-white py-12 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-8 text-center">
+          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">Funciona con las herramientas que ya usas a diario</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="text-2xl font-black flex items-center gap-2"><span className="text-green-500">WhatsApp</span></div>
+            <div className="text-2xl font-black flex items-center gap-2"><span className="text-blue-600">Facebook</span> / Instagram</div>
+            <div className="text-2xl font-black flex items-center gap-2"><span className="text-red-500">Google</span> Maps</div>
+            <div className="text-2xl font-black flex items-center gap-2"><span className="text-purple-600">Tarjetas</span> / Bizum</div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ: OBJECTION HANDLING (HOSTELERO LANGUAGE) */}
+      <section className="py-24 bg-[#FDFCF8] border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black mb-4">Respondemos a tus dudas.</h2>
+            <p className="text-xl text-gray-600">Hablando claro y sin letra pequeña.</p>
+          </div>
+          <div className="space-y-6">
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Tengo que saber de informática?</h3>
+              <p className="text-gray-600">Para nada. Nosotros nos encargamos de montarlo absolutamente todo. Tú te dedicas a tu restaurante y simplemente recibes las notificaciones de las reservas en tu teléfono de siempre.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Cuánto tardáis en dejarlo funcionando?</h3>
+              <p className="text-gray-600">En menos de 7 días lo tienes listo y trabajando para ti. Lo hacemos todo por nuestra cuenta, así que no vas a tener que cerrar ni interrumpir ni un solo servicio en tu local.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Me obligáis a firmar permanencia?</h3>
+              <p className="text-gray-600">No creemos en atar a nadie. El sistema es tuyo desde el primer día. En cuanto a la publicidad, trabajamos mes a mes: si no estás contento o no te traemos resultados, nos damos la mano y listo.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROFESSIONAL FOOTER */}
+      <footer className="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-2xl font-black tracking-tighter hover:scale-105 transition-transform cursor-pointer">
+            Architect<span className="text-[#FF4500]">.Sys</span>
+          </div>
+          <div className="text-gray-400 text-sm font-medium">
+            © {new Date().getFullYear()} Architect.Sys. Tu equipo para llenar tu restaurante.
+          </div>
+          <div className="flex gap-4">
+            <a href="https://wa.me/34611499674" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#FF4500] hover:-translate-y-1 transition-all">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
