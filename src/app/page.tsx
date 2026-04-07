@@ -59,7 +59,17 @@ export default function Home() {
                 </div>
                 <div className="relative bg-[#DCF8C6] p-3 rounded-xl rounded-tr-none self-end shadow-sm text-sm max-w-[85%] mt-2">
                   ¡Hola! Sí, tengo una mesa libre para 4 personas a las 21:30. ¿A qué nombre la reservo? 🍽️
-                  <div className="text-[10px] text-gray-500 text-right mt-1">20:15</div>
+                          </div>
+
+                {/* --- RESTORED BUBBLES FOR SUCCESS FEELING --- */}
+                <div className="relative bg-white p-3 rounded-xl rounded-tl-none self-start shadow-sm text-sm max-w-[85%] mt-2 animate-fade-in-up" style={{animationDelay: '1.5s'}}>
+                  A nombre de Carlos.
+                  <div className="text-[10px] text-gray-400 text-right mt-1">20:16</div>
+                </div>
+
+                <div className="relative bg-[#DCF8C6] p-3 rounded-xl rounded-tr-none self-end shadow-sm text-sm max-w-[85%] mt-2 animate-fade-in-up" style={{animationDelay: '2.5s'}}>
+                  Reserva confirmada. ¡Os esperamos! ✅
+                  <div className="text-[10px] text-gray-500 text-right mt-1">20:16</div>
                 </div>
               </div>
             </div>
