@@ -128,8 +128,8 @@ export default function Home() {
           <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl flex flex-col md:flex-row items-center gap-8 transform -rotate-1 hover:rotate-0 transition-transform duration-500 max-w-5xl mx-auto mt-12">
              <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl shrink-0">📈</div>
              <div>
-                <h4 className="text-2xl font-bold mb-2">El asador que recuperó <span className="text-[#FF4500]">2.000€ al mes</span>.</h4>
-                <p className="text-gray-600 italic">"Los viernes por la noche no dábamos abasto con el teléfono y dejábamos de contestar. Desde que pusimos el Recepcionista de WhatsApp, las reservas entran solas de madrugada. Las mesas están llenas y nosotros solo nos preocupamos de las brasas."</p>
+                <h4 className="text-2xl font-bold mb-2">La pizzería "El Horno de Juan" recuperó <span className="text-[#FF4500]">2.000€ al mes</span>.</h4>
+                <p className="text-gray-600 italic">"Los fines de semana el teléfono era un caos y dejábamos de contestar para atender el salón. Desde que pusimos el Recepcionista de WhatsApp, las reservas entran solas de madrugada. Las mesas están llenas y ahora las mesas grandes siempre están llenas."</p>
                 <div className="text-sm font-bold text-gray-400 mt-4 uppercase tracking-widest">— Caso de Éxito: Ecosistema 24/7</div>
              </div>
           </div>
@@ -161,6 +161,7 @@ export default function Home() {
               <li className="flex items-start gap-3"><span className="text-[#FF4500] text-2xl leading-none">📱</span> <div><strong className="text-white">Micro-Influencers:</strong> Hacemos que tu comida se vuelva viral en tu ciudad.</div></li>
             </ul>
             <p className="text-2xl font-black text-white bg-white/10 inline-block px-6 py-3 rounded-xl border border-white/20">Por solo 400€ / mes</p>
+            <p className="text-xs text-gray-400 mt-2">* El presupuesto para anuncios (gasto publicitario) lo decides y abonas tú directamente a la plataforma (Meta/Facebook).</p>
             <a href="https://wa.me/34611499674?text=Hola,%20quiero%20llenar%20mi%20local%20con%20campañas%20de%20Ads%20por%20400€." className="inline-flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold shadow-lg hover:bg-gray-200 hover:-translate-y-1 transition-all">
               Activar mi publicidad
             </a>
@@ -212,8 +213,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-8 flex flex-col md:flex-row items-center gap-8">
            <div className="w-24 h-24 bg-white text-[#FF4500] rounded-full flex items-center justify-center text-4xl shrink-0 font-black shadow-2xl">⚡</div>
            <div>
-              <h4 className="text-3xl font-black mb-3">Mesas que rotan un <span className="text-yellow-300">20% más rápido</span>.</h4>
-              <p className="text-white/90 text-lg italic">"Nuestros camareros perdían 15 minutos explicando platos y tomando nota. Instalamos la Carta Interactiva con fotos que dan hambre. Ahora, el cliente se sienta, escanea y sabe qué quiere antes de que lleguemos a la mesa. Servimos más rápido y el ticket medio ha subido un 15%."</p>
+              <h4 className="text-3xl font-black mb-3">"La Cervecería del Puerto" rota sus mesas un <span className="text-yellow-300">20% más rápido</span>.</h4>
+              <p className="text-white/90 text-lg italic">"En la terraza perdíamos mucho tiempo tomando nota de las bebidas. Instalamos la Carta Interactiva con fotos que dan hambre. Ahora, el cliente se sienta, escanea y sabe qué quiere antes de que lleguemos a la mesa. Servimos más rápido y el ticket medio ha subido un 15% al ver las fotos de los postres."</p>
            </div>
         </div>
       </section>
@@ -254,6 +255,7 @@ export default function Home() {
               <p className="text-gray-600 relative z-10">Revisas todo. Si estás 100% contento con el resultado, abonas el resto. Sin ataduras raras.</p>
             </div>
           </div>
+          <p className="text-sm text-gray-400 text-center mt-12 italic">* Nota: Dependiendo del servicio contratado (ej. Meta Ads o Ecosistemas IA), se establecerán cuotas de gestión o mantenimiento mensual que quedarán fijadas y claras antes de firmar cualquier acuerdo.</p>
         </div>
       </section>
 
@@ -322,6 +324,14 @@ export default function Home() {
             <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Qué pasa si quiero cambiar precios o platos?</h3>
               <p className="text-gray-600">Tendrás un panel hiper sencillo desde tu propio móvil para cambiar precios, ocultar platos que se hayan agotado o subir fotos nuevas en cuestión de segundos. Y si tienes dudas, nos escribes por WhatsApp.</p>
+            </div>
+            <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Cuánto tengo que invertir en publicidad?</h3>
+              <p className="text-gray-600">Nuestra tarifa cubre la estrategia y gestión técnica. El presupuesto publicitario lo decides tú y se cobra directamente en tu tarjeta. Recomendamos empezar con 5€ a 10€ al día.</p>
+            </div>
+            <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿El sistema de reservas tiene límite de mesas?</h3>
+              <p className="text-gray-600">Cero límites. Da igual si tienes 5 mesas o 50, el sistema gestionará todas las reservas automáticamente sin cobrarte comisiones extra por comensal, a diferencia de otras plataformas.</p>
             </div>
           </div>
         </div>
