@@ -36,7 +36,7 @@ export default function Home() {
               El teléfono suena, tú estás sirviendo platos y pierdes 150€ en reservas. Instalamos un recepcionista virtual en tu WhatsApp que atiende y cierra mesas mientras tú trabajas.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <a href="https://wa.me/34611499674?text=Hola,%20quiero%20ver%20cómo%20funciona." className="inline-flex items-center justify-center gap-3 bg-[#FF4500] text-white px-10 py-5 rounded-full text-xl font-bold shadow-[0_0_40px_rgba(255,69,0,0.4)] hover:-translate-y-2 hover:shadow-[0_0_60px_rgba(255,69,0,0.8)] transition-all duration-300">
+              <a href="https://wa.me/34611499674?text=Hola,%20quiero%20ver%20cómo%20funciona." className="inline-flex items-center justify-center gap-3 bg-[#FF4500] text-white px-6 md:px-10 py-4 md:py-5 rounded-full text-lg md:text-xl font-bold shadow-[0_0_40px_rgba(255,69,0,0.4)] hover:-translate-y-2 hover:shadow-[0_0_60px_rgba(255,69,0,0.8)] transition-all duration-300 whitespace-nowrap w-full sm:w-auto text-center">
                 Ver demostración en vivo
               </a>
             </div>
@@ -82,17 +82,17 @@ export default function Home() {
             <div className="group bg-[#FDFCF8] p-10 rounded-[2rem] border border-gray-100 hover:border-red-200 hover:shadow-2xl hover:-translate-y-3 transition-all duration-500">
               <div className="text-4xl mb-6 transform group-hover:scale-125 transition-transform duration-500">📉</div>
               <h3 className="text-2xl font-bold mb-4 group-hover:text-red-500 transition-colors">El Martes Vacío</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">Gastas luz y pagas nóminas, pero el local está a la mitad. Necesitas que tus clientes vuelvan sin tener que rogarles.</p>
+              <p className="text-gray-600 leading-relaxed text-lg text-pretty">Gastas luz y pagas nóminas, pero el local está a la mitad. Necesitas que tus clientes vuelvan sin tener que rogarles.</p>
             </div>
             <div className="group bg-[#FDFCF8] p-10 rounded-[2rem] border border-gray-100 hover:border-red-200 hover:shadow-2xl hover:-translate-y-3 transition-all duration-500">
               <div className="text-4xl mb-6 transform group-hover:scale-125 transition-transform duration-500">👻</div>
               <h3 className="text-2xl font-bold mb-4 group-hover:text-red-500 transition-colors">El Teléfono Fantasma</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">Viernes, 21:00h. El teléfono suena y nadie lo coge. Acabas de perder dinero porque tu personal solo tiene dos manos.</p>
+              <p className="text-gray-600 leading-relaxed text-lg text-pretty">Viernes, 21:00h. El teléfono suena y nadie lo coge. Acabas de perder dinero porque tu personal solo tiene dos manos.</p>
             </div>
             <div className="group bg-[#FDFCF8] p-10 rounded-[2rem] border border-gray-100 hover:border-red-200 hover:shadow-2xl hover:-translate-y-3 transition-all duration-500">
               <div className="text-4xl mb-6 transform group-hover:scale-125 transition-transform duration-500">🛵</div>
               <h3 className="text-2xl font-bold mb-4 group-hover:text-red-500 transition-colors">El Peaje de Glovo</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">Las apps de delivery te roban el 30%. Trabajas para ellos, corres para ellos, pero el riesgo y el sudor lo pones tú.</p>
+              <p className="text-gray-600 leading-relaxed text-lg text-pretty">Las apps de delivery te roban el 30%. Trabajas para ellos, corres para ellos, pero el riesgo y el sudor lo pones tú.</p>
             </div>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function Home() {
             </ul>
             <p className="text-2xl font-black text-white bg-white/10 inline-block px-6 py-3 rounded-xl border border-white/20">Por solo 400€ / mes</p>
             <p className="text-xs text-gray-400 mt-2">* El presupuesto para anuncios (gasto publicitario) lo decides y abonas tú directamente a la plataforma (Meta/Facebook).</p>
-            <a href="https://wa.me/34611499674?text=Hola,%20quiero%20llenar%20mi%20local%20con%20campañas%20de%20Ads%20por%20400€." className="inline-flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold shadow-lg hover:bg-gray-200 hover:-translate-y-1 transition-all">
+            <a href="https://wa.me/34611499674?text=Hola,%20quiero%20llenar%20mi%20local%20con%20campañas%20de%20Ads%20por%20400€." className="inline-flex items-center justify-center gap-3 bg-white text-gray-900 px-6 md:px-8 py-4 rounded-full font-bold shadow-[0_0_15px_rgba(255,69,0,0.4)] ring-4 ring-[#FF4500]/50 animate-pulse hover:bg-gray-200 hover:-translate-y-1 transition-all whitespace-nowrap text-center">
               Activar mi publicidad
             </a>
           </div>
@@ -296,7 +296,7 @@ export default function Home() {
       <section className="bg-[#FDFCF8] py-12 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-8 text-center">
           <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Funciona con las herramientas que ya usas a diario</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-100 grayscale-0 md:opacity-60 md:grayscale hover:grayscale-0 transition-all duration-500">
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-green-500">WhatsApp</span></div>
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-blue-600">Facebook</span> / Instagram</div>
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-red-500">Google</span> Maps</div>
