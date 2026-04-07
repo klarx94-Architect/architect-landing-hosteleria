@@ -37,12 +37,35 @@ export async function POST(req: Request) {
     // 4. Save AI response to DB
     await supabase.from('chats').insert([{ phone, role: 'assistant', content: aiResponse }]);
 
-    // 5. TODO: Trigger outgoing API call to YCloud to send the message back to WhatsApp
-    console.log("To send to WhatsApp:", aiResponse);
+    // 5. Send reply back via YCloud API
+    const yCloudApiKey = process.env.YCLOUD_API_KEY;
+    if (yCloudApiKey) {
+      await fetch('https://api.ycloud.com/v2/whatsapp/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': yCloudApiKey,
+        },
+        body: JSON.stringify({
+          from: process.env.YCLOUD_WHATSAPP_NUMBER,
+          to: phone,
+          type: 'text',
+          text: { body: aiResponse },
+        }),
+      });
+    }
 
     return NextResponse.json({ success: true, reply: aiResponse });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+}
+
+// YCloud webhook verification (GET challenge)
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const challenge = searchParams.get('challenge');
+  if (challenge) return new Response(challenge, { status: 200 });
+  return NextResponse.json({ status: 'Webhook active' });
 }
