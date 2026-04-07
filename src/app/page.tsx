@@ -16,7 +16,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* SECTION 1: CINEMATIC HERO (WITH PRESERVED MOCKUP) */}
+      {/* SECTION 1: CINEMATIC HERO */}
       <header className="relative w-full min-h-screen flex items-center justify-center overflow-hidden pt-20 group">
         <div className="absolute inset-0 w-full h-full">
           <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1920" alt="Restaurante lleno" className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-[10s] ease-out" />
@@ -24,7 +24,7 @@ export default function Home() {
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="text-white space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[#FF4500] text-sm font-bold tracking-widest uppercase hover:bg-white/20 transition-colors cursor-default">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[#FF4500] text-sm font-bold tracking-widest uppercase cursor-default">
               <span className="w-2 h-2 rounded-full bg-[#FF4500] animate-pulse"></span>
               Mesas llenas. Cero estrés.
             </div>
@@ -74,7 +74,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* SECTION 2: THE PAIN (WITH HOVER EFFECTS) */}
+      {/* SECTION 2: THE PAIN */}
       <section className="bg-white py-24 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-8">
           <h2 className="text-4xl lg:text-5xl font-black text-center mb-20 max-w-4xl mx-auto">¿Te suena familiar esta <span className="text-red-500">pesadilla?</span></h2>
@@ -105,37 +105,44 @@ export default function Home() {
             <h2 className="text-4xl font-black mb-6">No somos informáticos. Somos tu estrategia comercial.</h2>
             <p className="text-xl text-gray-600">Así convertimos tu restaurante en una máquina bien engrasada.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative mb-16">
             <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-1 bg-gradient-to-r from-gray-200 via-[#FF4500] to-gray-900 z-0 opacity-50"></div>
-            
             <div className="relative z-10 flex flex-col items-center text-center group">
               <div className="w-24 h-24 bg-white border-4 border-[#FF4500] rounded-full flex items-center justify-center text-3xl font-black text-[#FF4500] shadow-lg mb-6 group-hover:scale-110 group-hover:bg-[#FF4500] group-hover:text-white transition-all duration-500">1</div>
               <h3 className="text-2xl font-bold mb-4">Atracción Incesante</h3>
-              <p className="text-gray-600 text-lg">Te inyectamos tráfico real. Cuando alguien en tu ciudad busque dónde cenar, tú serás su única opción lógica.</p>
+              <p className="text-gray-600 text-lg">Te inyectamos tráfico real. Cuando alguien busque dónde cenar, tú serás su única opción lógica.</p>
             </div>
-            
             <div className="relative z-10 flex flex-col items-center text-center group">
               <div className="w-24 h-24 bg-[#FF4500] rounded-full flex items-center justify-center text-3xl font-black text-white shadow-lg mb-6 group-hover:scale-110 transition-all duration-500 shadow-orange-500/40">2</div>
               <h3 className="text-2xl font-bold mb-4">Cierre Automático</h3>
-              <p className="text-gray-600 text-lg">Tu Agente de IA atiende el WhatsApp en segundos, enamora al cliente y cierra la reserva o el pedido a domicilio.</p>
+              <p className="text-gray-600 text-lg">Tu Agente de IA atiende el WhatsApp en segundos, enamora al cliente y cierra la reserva o el pedido.</p>
             </div>
-            
             <div className="relative z-10 flex flex-col items-center text-center group">
               <div className="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center text-3xl font-black text-white shadow-lg mb-6 group-hover:scale-110 group-hover:bg-black transition-all duration-500">3</div>
               <h3 className="text-2xl font-bold mb-4">Ticket Multiplicado</h3>
               <p className="text-gray-600 text-lg">En el local, piden más rápido gracias a cartas interactivas. Mesas veloces, camareros sin estrés y cajas que cuadran.</p>
             </div>
           </div>
+
+          {/* SUCCESS STORY 1: WHATSAPP BOT */}
+          <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl flex flex-col md:flex-row items-center gap-8 transform -rotate-1 hover:rotate-0 transition-transform duration-500 max-w-5xl mx-auto mt-12">
+             <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl shrink-0">📈</div>
+             <div>
+                <h4 className="text-2xl font-bold mb-2">El asador que recuperó <span className="text-[#FF4500]">2.000€ al mes</span>.</h4>
+                <p className="text-gray-600 italic">"Los viernes por la noche no dábamos abasto con el teléfono y dejábamos de contestar. Desde que pusimos el Recepcionista de WhatsApp, las reservas entran solas de madrugada. Las mesas están llenas y nosotros solo nos preocupamos de las brasas."</p>
+                <div className="text-sm font-bold text-gray-400 mt-4 uppercase tracking-widest">— Caso de Éxito: Ecosistema 24/7</div>
+             </div>
+          </div>
         </div>
       </section>
 
-      {/* NEW SECTION: ADS & TRAFFIC (THE FUEL) */}
+      {/* SECTION 4: ADS & TRAFFIC */}
       <section className="py-24 bg-[#1A1A1A] text-white relative overflow-hidden">
         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-[#FF4500] rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <div className="order-2 lg:order-1 relative group">
             <div className="aspect-[4/3] bg-gray-900 rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 group-hover:border-[#FF4500]/50 transition-colors duration-500">
-              <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000" alt="Dashboard Ads" className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" />
+              <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000" alt="Restaurante lleno" className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-[#FF4500] text-white p-6 rounded-2xl shadow-2xl font-bold text-xl animate-bounce">
               ROI Medible
@@ -147,14 +154,13 @@ export default function Home() {
             </div>
             <h2 className="text-4xl lg:text-5xl font-black leading-tight">Tu restaurante lleno, a golpe de clic.</h2>
             <p className="text-xl text-gray-300 leading-relaxed">
-              No sirve de nada tener el mejor local o sistema si nadie sabe que existes. No somos "Community Managers" que suben fotos bonitas. Somos expertos en <span className="font-bold text-white">Meta Ads y Tráfico Láser</span>.
+              No somos "Community Managers" que suben fotos bonitas. Somos expertos en <span className="font-bold text-white">Meta Ads y Tráfico Láser</span> para llenar tu local de gente con hambre.
             </p>
             <ul className="space-y-4 text-lg text-gray-400">
-              <li className="flex items-start gap-3"><span className="text-[#FF4500] text-2xl leading-none">🎯</span> <div><strong className="text-white">Publicidad Quirúrgica:</strong> Campañas en Facebook e Instagram dirigidas a personas a 5km de tu local que ya tienen hambre.</div></li>
-              <li className="flex items-start gap-3"><span className="text-[#FF4500] text-2xl leading-none">📱</span> <div><strong className="text-white">Micro-Influencers:</strong> Llevamos a creadores locales para que tu comida se haga viral en tu ciudad.</div></li>
+              <li className="flex items-start gap-3"><span className="text-[#FF4500] text-2xl leading-none">🎯</span> <div><strong className="text-white">Publicidad Quirúrgica:</strong> Campañas locales dirigidas a personas a 5km de tu negocio.</div></li>
+              <li className="flex items-start gap-3"><span className="text-[#FF4500] text-2xl leading-none">📱</span> <div><strong className="text-white">Micro-Influencers:</strong> Hacemos que tu comida se vuelva viral en tu ciudad.</div></li>
             </ul>
             <p className="text-2xl font-black text-white bg-white/10 inline-block px-6 py-3 rounded-xl border border-white/20">Por solo 400€ / mes</p>
-            <p className="text-gray-400 italic">Una inversión que no se mide en "Me Gustas", sino en mesas reservadas.</p>
             <a href="https://wa.me/34611499674?text=Hola,%20quiero%20llenar%20mi%20local%20con%20campañas%20de%20Ads%20por%20400€." className="inline-flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-bold shadow-lg hover:bg-gray-200 hover:-translate-y-1 transition-all">
               Activar mi publicidad
             </a>
@@ -162,60 +168,110 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: FULL DARK KITCHEN ECOSYSTEM (EXPANDED) */}
+      {/* SECTION 5: DARK KITCHEN ECOSYSTEM (DEEPLY ENRICHED) */}
       <section className="py-24 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center max-w-4xl mx-auto mb-20 space-y-6">
             <div className="text-[#FF4500] font-bold tracking-widest uppercase">Evolución Radical</div>
             <h2 className="text-4xl lg:text-6xl font-black leading-tight">De cocina de barrio a <br/>Imperio de Delivery.</h2>
             <p className="text-xl text-gray-600">
-              Si haces comida para llevar, deja de sangrar el 30% en comisiones. Te montamos el ecosistema definitivo de una Dark Kitchen para que domines tu ciudad.
+              ¿Tienes una cocina equipada? Te montamos el ecosistema definitivo de una Dark Kitchen. Crea marcas virtuales que solo existen en internet, aprovecha tus ingredientes y multiplica tu flujo de caja sin pagar más alquiler ni luz.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
               <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🍔</div>
-              <h3 className="text-2xl font-bold mb-4">Marcas Virtuales</h3>
-              <p className="text-gray-600 flex-1">¿Haces pollo asado? Te creamos una marca paralela de hamburguesas o alitas que opera desde tu misma cocina. Multiplicas tus vías de ingreso sin pagar más alquiler.</p>
+              <h3 className="text-2xl font-bold mb-4">Marcas Virtuales (Cero Mermas)</h3>
+              <p className="text-gray-600 flex-1">¿Vendes pollo asado? Te creamos una marca de alitas crujientes y otra de hamburguesas de pollo. Operan desde tu misma plancha, usando tus mismos ingredientes. <strong className="text-gray-900">Reduces mermas al 0% y multiplicas ingresos</strong> sin abrir locales nuevos.</p>
             </div>
             
             <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
               <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🛵</div>
-              <h3 className="text-2xl font-bold mb-4">App & Flota Propia</h3>
-              <p className="text-gray-600 flex-1">Te desarrollamos tu propia App de pedidos (0% comisiones). Y si lo necesitas, te ayudamos a gestionar y conectar con tu propia flota de repartidores locales.</p>
+              <h3 className="text-2xl font-bold mb-4">App & Flota (Flujo de Caja)</h3>
+              <p className="text-gray-600 flex-1">Cortamos la hemorragia de las comisiones abusivas. Te desarrollamos tu propia App de pedidos. <strong className="text-gray-900">El dinero entra directo a tu cuenta al instante</strong> (sin esperar una semana a que te pague Glovo). Además, te conectamos con tu propia flota de repartidores.</p>
             </div>
 
             <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
               <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📊</div>
-              <h3 className="text-2xl font-bold mb-4">CRM y Estrategia</h3>
-              <p className="text-gray-600 flex-1">Software de gestión total. Sabrás qué cliente compra más, qué marca virtual funciona mejor y lanzaremos ofertas automáticas por WhatsApp para fidelizarlos.</p>
+              <h3 className="text-2xl font-bold mb-4">CRM y Crecimiento</h3>
+              <p className="text-gray-600 flex-1">No vas a ciegas. Sabrás qué cliente compra más y qué platos te dan más rentabilidad. Lanzaremos <strong className="text-gray-900">ofertas automáticas por WhatsApp los martes lluviosos</strong> para asegurar que tu caja nunca deje de sonar.</p>
             </div>
           </div>
           
           <div className="mt-12 text-center">
             <a href="https://wa.me/34611499674?text=Hola,%20quiero%20crear%20mi%20imperio%20Dark%20Kitchen%20con%20marcas%20virtuales." className="inline-block bg-gray-900 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-[#FF4500] hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-              Analizar mi proyecto Dark Kitchen
+              Analizar mi rentabilidad Dark Kitchen
             </a>
           </div>
         </div>
       </section>
 
-      {/* SECTION: VALUE LADDER */}
-      <section className="bg-[#FDFCF8] text-gray-900 py-32 border-t border-gray-200">
+      {/* SUCCESS STORY 2: QR MENUS */}
+      <section className="py-12 bg-[#FF4500] text-white">
+        <div className="max-w-5xl mx-auto px-8 flex flex-col md:flex-row items-center gap-8">
+           <div className="w-24 h-24 bg-white text-[#FF4500] rounded-full flex items-center justify-center text-4xl shrink-0 font-black shadow-2xl">⚡</div>
+           <div>
+              <h4 className="text-3xl font-black mb-3">Mesas que rotan un <span className="text-yellow-300">20% más rápido</span>.</h4>
+              <p className="text-white/90 text-lg italic">"Nuestros camareros perdían 15 minutos explicando platos y tomando nota. Instalamos la Carta Interactiva con fotos que dan hambre. Ahora, el cliente se sienta, escanea y sabe qué quiere antes de que lleguemos a la mesa. Servimos más rápido y el ticket medio ha subido un 15%."</p>
+           </div>
+        </div>
+      </section>
+
+      {/* NEW SECTION: OUR PROCESS (TRANSPARENT 4-STEP WORKFLOW) */}
+      <section className="py-24 bg-[#FDFCF8]">
+        <div className="max-w-7xl mx-auto px-8">
+          <div className="text-center max-w-4xl mx-auto mb-20 space-y-6">
+            <h2 className="text-4xl lg:text-5xl font-black leading-tight">Sin reuniones interminables. <br/>Así de rápido trabajamos.</h2>
+            <p className="text-xl text-gray-600">
+              Sabemos que no tienes tiempo que perder. Nuestro proceso es claro, directo y sin letra pequeña.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative group hover:-translate-y-2 transition-transform duration-300">
+              <div className="text-6xl font-black text-gray-50 absolute top-4 right-4 group-hover:text-orange-50 transition-colors">1</div>
+              <div className="text-4xl mb-4 relative z-10">🤝</div>
+              <h3 className="text-xl font-bold mb-2 relative z-10">Acuerdo Claro</h3>
+              <p className="text-gray-600 relative z-10">Hablamos por WhatsApp. Confirmamos los detalles, precios y los platos que necesitas en tu sistema.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative group hover:-translate-y-2 transition-transform duration-300">
+              <div className="text-6xl font-black text-gray-50 absolute top-4 right-4 group-hover:text-orange-50 transition-colors">2</div>
+              <div className="text-4xl mb-4 relative z-10">📝</div>
+              <h3 className="text-xl font-bold mb-2 relative z-10">Señal del 50%</h3>
+              <p className="text-gray-600 relative z-10">Te enviamos una factura transparente. Al abonar el 50%, nos ponemos manos a la obra ese mismo día.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative group hover:-translate-y-2 transition-transform duration-300">
+              <div className="text-6xl font-black text-gray-50 absolute top-4 right-4 group-hover:text-orange-50 transition-colors">3</div>
+              <div className="text-4xl mb-4 relative z-10">⚡</div>
+              <h3 className="text-xl font-bold mb-2 relative z-10">Entrega Rápida</h3>
+              <p className="text-gray-600 relative z-10">En 3 a 5 días te entregamos tu web publicada, tu dominio propio y los códigos QR listos para tus mesas.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative group hover:-translate-y-2 transition-transform duration-300">
+              <div className="text-6xl font-black text-gray-50 absolute top-4 right-4 group-hover:text-orange-50 transition-colors">4</div>
+              <div className="text-4xl mb-4 relative z-10">✅</div>
+              <h3 className="text-xl font-bold mb-2 relative z-10">Visto Bueno</h3>
+              <p className="text-gray-600 relative z-10">Revisas todo. Si estás 100% contento con el resultado, abonas el resto. Sin ataduras raras.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6: VALUE LADDER */}
+      <section className="bg-white text-gray-900 py-32 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
             <h2 className="text-4xl lg:text-6xl font-black tracking-tight mb-6">Empieza a digitalizar.</h2>
             <p className="text-xl text-gray-600">Herramientas esenciales que se pagan solas con la primera caja del mes.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white p-10 rounded-[2rem] border border-gray-200 flex flex-col hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-[#FDFCF8] p-10 rounded-[2rem] border border-gray-200 flex flex-col hover:shadow-xl transition-shadow duration-300">
               <h3 className="font-bold text-3xl mb-2">La Carta Interactiva</h3>
-              <div className="text-5xl font-black text-gray-900 mb-6">150€</div>
+              <div className="text-5xl font-black text-gray-900 mb-6">150€ <span className="text-sm font-normal text-gray-500 tracking-normal">/ Pago Único</span></div>
               <ul className="space-y-4 text-gray-600 mb-10 text-lg flex-1">
                 <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Carta Web que da hambre</li>
                 <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Códigos QR físicos para tus mesas</li>
-                <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Botón directo a tu WhatsApp</li>
+                <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Ficha de Google Actualizada</li>
               </ul>
               <a href="https://wa.me/34611499674?text=Hola,%20me%20interesa%20La%20Carta%20Interactiva%20de%20150€." className="block text-center w-full border-2 border-gray-900 text-gray-900 py-4 rounded-full font-bold hover:bg-gray-900 hover:text-white transition-colors text-lg">Empezar por lo básico</a>
             </div>
@@ -233,11 +289,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* TRUST BANNER: INTEGRATIONS */}
-      <section className="bg-white py-12 border-t border-gray-100">
+      <section className="bg-[#FDFCF8] py-12 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-8 text-center">
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">Funciona con las herramientas que ya usas a diario</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Funciona con las herramientas que ya usas a diario</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-green-500">WhatsApp</span></div>
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-blue-600">Facebook</span> / Instagram</div>
             <div className="text-2xl font-black flex items-center gap-2"><span className="text-red-500">Google</span> Maps</div>
@@ -247,24 +304,24 @@ export default function Home() {
       </section>
 
       {/* FAQ: OBJECTION HANDLING (HOSTELERO LANGUAGE) */}
-      <section className="py-24 bg-[#FDFCF8] border-t border-gray-200">
+      <section className="py-24 bg-white border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-4">Respondemos a tus dudas.</h2>
             <p className="text-xl text-gray-600">Hablando claro y sin letra pequeña.</p>
           </div>
           <div className="space-y-6">
-            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Tengo que saber de informática?</h3>
-              <p className="text-gray-600">Para nada. Nosotros nos encargamos de montarlo absolutamente todo. Tú te dedicas a tu restaurante y simplemente recibes las notificaciones de las reservas en tu teléfono de siempre.</p>
+              <p className="text-gray-600">Para nada. Nosotros nos encargamos de montarlo absolutamente todo. Tú te dedicas a tu restaurante y simplemente recibes las notificaciones de las reservas y pedidos en tu teléfono de siempre.</p>
             </div>
-            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Cuánto tardáis en dejarlo funcionando?</h3>
-              <p className="text-gray-600">En menos de 7 días lo tienes listo y trabajando para ti. Lo hacemos todo por nuestra cuenta, así que no vas a tener que cerrar ni interrumpir ni un solo servicio en tu local.</p>
-            </div>
-            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Me obligáis a firmar permanencia?</h3>
-              <p className="text-gray-600">No creemos en atar a nadie. El sistema es tuyo desde el primer día. En cuanto a la publicidad, trabajamos mes a mes: si no estás contento o no te traemos resultados, nos damos la mano y listo.</p>
+              <p className="text-gray-600">No creemos en atar a nadie. Sistemas como la web o la carta son tuyos desde el día 1, mediante un pago único. En cuanto a la publicidad, trabajamos mes a mes: si no estás contento, nos damos la mano y listo.</p>
+            </div>
+            <div className="bg-[#FDFCF8] p-8 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xl font-bold mb-2 flex items-center gap-3"><span className="text-[#FF4500]">✦</span> ¿Qué pasa si quiero cambiar precios o platos?</h3>
+              <p className="text-gray-600">Tendrás un panel hiper sencillo desde tu propio móvil para cambiar precios, ocultar platos que se hayan agotado o subir fotos nuevas en cuestión de segundos. Y si tienes dudas, nos escribes por WhatsApp.</p>
             </div>
           </div>
         </div>
