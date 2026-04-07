@@ -9,12 +9,19 @@ export async function GET(req: Request) {
   const token     = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
 
+  // Diagnostic log — visible in Vercel Runtime Logs
+  console.log('[Webhook GET]', { mode, token, challenge, envToken: process.env.WHATSAPP_VERIFY_TOKEN });
+
   if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
-    // Return the challenge as plain text — Meta requires this exact format
-    return new Response(challenge ?? '', { status: 200 });
+    // Return challenge as plain text with explicit Content-Type — Meta requires this exact format
+    return new Response(challenge ?? '', {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain' },
+    });
   }
 
-  return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  console.warn('[Webhook GET] Token mismatch or wrong mode');
+  return new Response('Forbidden', { status: 403 });
 }
 
 // ─── META CLOUD API: POST MESSAGE HANDLER ────────────────────────────────────
