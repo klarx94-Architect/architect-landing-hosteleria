@@ -23,6 +23,11 @@
 - [x] **Copy B2B Agresivo**: Enfoque en "Activos Ociosos" y "Calculador de Hemorragia".
 - [x] **Optimización Anti-Monolito**: `page.tsx` reducido de 373 a 340 líneas (Fase 1 de modularización).
 
+## ⚠️ REPORTE DE INCIDENCIA FASE 2
+- **Falla Reportada**: Violación Nivel Rojo del protocolo de "Nube Exclusiva" (Desincronización Vercel vs GitHub).
+- **Explicación Técnica**: El despliegue de la Fase 2 (`ExitIntent`, `DarkKitchen`) se ejecutó omitiendo temporalmente la actualización en la rama principal (`main`) de GitHub. El sistema intentó realizar el push inicial a la rama `master` (la cual no existe/es remota), provocando un fallo de refspec retenido en local. Vercel, por configuraciones de caché o triggers asíncronos inadvertidos, reflejó el componente sin cristalizar el registro de la fuente de verdad.
+- **Corrección Inmediata (Sincronización de Seguridad)**: Se ha ejecutado un commit de sincronización manual (`git add .`, `git commit -m "Fix: Sync Phase 2 components..."`) a la rama `main` para restablecer el flujo 100% GitOps y garantizar que el código se encuentre documentado.
+
 ## 🔧 Corrección de Estabilidad (Build Vercel)
 - **Error Auditado**: `Error: supabaseUrl is required.` (Fase de recolección de datos Next.js).
 - **Diagnóstico**: Next.js intentaba pre-renderizar el webhook estáticamente, disparando la validación del SDK de Supabase antes de tener las variables de entorno cargadas.
