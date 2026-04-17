@@ -34,6 +34,12 @@
     - 🗄️ *Blueprint SQL de Infraestructura Bare Metal generado y persistido en `project_state/SUPABASE_BLUEPRINT.md`*.
 - [x] **Construcción de Dashboard Analítico**: Refactorizado `admin-architect/page.tsx` para incorporar paneles modulares dinámicos y colorimetría predictiva.
 - [x] **Modularidad Componentizada (< 400 líneas)**: Creados los módulos en `/components/dashboard/`: `MetricsCards.tsx` y `LiveMonitor.tsx`.
+
+## 🔐 Implementaciones Fase 3 (Parte B - Auth & Realtime)
+- [x] **Arquitectura Frontend Segura**: Implementación de `AuthLayer.tsx` para forzar autenticación mediante Supabase JWT antes de montar la Sala de Análisis. Esto cumple rigurosamente con las políticas RLS habilitadas por el Agente de Supabase.
+- [x] **Cliente CSR Independiente**: Separación de responsabilidades con `supabase-client.ts`, permitiendo a los Client Components (CSR) conectarse a la API de Supabase sin exponer las variables de servidor (Service Role Key).
+- [x] **Refactorización de LiveMonitor**: Convertido a Client Component puro. Ahora obtiene los datos iniciales de los leads al montarse y se suscribe al canal `postgres_changes` de Supabase Realtime para recibir inyecciones de datos `INSERT` y `UPDATE` de forma instantánea.
+- [x] **Aislamiento Render SSR -> CSR**: `admin-architect/page.tsx` delegó la obtención de leads y datos a la capa del cliente para evitar colisiones de re-hidratación de Realtime en SSR, proveyendo una UI 100% interactiva bajo el AuthLayer.
 ## 🔧 Corrección de Estabilidad (Build Vercel)
 - **Error Auditado**: `Error: supabaseUrl is required.` (Fase de recolección de datos Next.js).
 - **Diagnóstico**: Next.js intentaba pre-renderizar el webhook estáticamente, disparando la validación del SDK de Supabase antes de tener las variables de entorno cargadas.

@@ -1,4 +1,7 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { supabaseClient } from '@/lib/supabase-client';
 
 function getIntentBadge(intent: string) {
   switch(intent) {
@@ -9,8 +12,70 @@ function getIntentBadge(intent: string) {
   }
 }
 
-export default function LiveMonitor({ leads }: { leads: Record<string, any[]> }) {
-  const phones = Object.keys(leads);
+export default function LiveMonitor({ onDataUpdate }: { onDataUpdate?: (chats: any[]) => void }) {
+  const [chats, setChats] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    // 1. Fetch data inicial
+    const fetchChats = async () => {
+      const { data, error } = await supabaseClient
+        .from('chats')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) console.error("Error fetching chats:", error);
+      if (mounted && data) {
+        setChats(data);
+        if (onDataUpdate) onDataUpdate(data);
+        setLoading(false);
+      }
+    };
+
+    fetchChats();
+
+    // 2. Suscripción a Realtime
+    const channel = supabaseClient.channel('realtime:public:chats')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats' }, (payload) => {
+        if (!mounted) return;
+        console.log('Realtime INSERT received!', payload.new);
+        setChats((current) => {
+          const updated = [payload.new, ...current];
+          if (onDataUpdate) onDataUpdate(updated);
+          return updated;
+        });
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chats' }, (payload) => {
+        if (!mounted) return;
+        console.log('Realtime UPDATE received!', payload.new);
+        setChats((current) => {
+          const updated = current.map(c => c.id === payload.new.id ? payload.new : c);
+          if (onDataUpdate) onDataUpdate(updated);
+          return updated;
+        });
+      })
+      .subscribe();
+
+    return () => {
+      mounted = false;
+      supabaseClient.removeChannel(channel);
+    };
+  }, [onDataUpdate]);
+
+  if (loading) {
+     return <div className="p-8 text-center text-gray-500 font-bold animate-pulse">Sincronizando con la red neuronal de Meta...</div>;
+  }
+
+  // Agrupar chats por número de teléfono
+  const leadsObj = chats.reduce((acc: any, chat: any) => {
+      if (!acc[chat.phone]) acc[chat.phone] = [];
+      acc[chat.phone].push(chat);
+      return acc;
+  }, {});
+
+  const phones = Object.keys(leadsObj);
   
   if (phones.length === 0) {
     return (
@@ -25,8 +90,9 @@ export default function LiveMonitor({ leads }: { leads: Record<string, any[]> })
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {phones.map((phone) => {
-        // Encontrar el último intent en esta conversación
-        const lastIntent = leads[phone].find(m => m.intent)?.intent || 'lead';
+        // Encontrar el último intent valioso en esta conversación
+        const conversation = leadsObj[phone];
+        const lastIntentStr = conversation.find((m: any) => m.intent)?.intent || 'lead';
         
         return (
           <div key={phone} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col max-h-[600px] hover:border-gray-300 transition-colors">
@@ -35,11 +101,11 @@ export default function LiveMonitor({ leads }: { leads: Record<string, any[]> })
                 <span className="text-gray-400 text-sm mr-2">📱</span>
                 {phone.replace('34', '+34 ')}
               </h2>
-              {getIntentBadge(lastIntent)}
+              {getIntentBadge(lastIntentStr)}
             </div>
             
             <div className="space-y-4 overflow-y-auto pr-2 flex-1 flex flex-col-reverse">
-              {leads[phone].map((msg: any) => (
+              {conversation.map((msg: any) => (
                 <div key={msg.id} className={`p-4 rounded-xl text-sm ${msg.role === 'user' ? 'bg-gray-50 text-gray-700 mr-4 border border-gray-100' : 'bg-[#FDFCF8] text-gray-900 ml-4 border border-orange-100 shadow-sm'}`}>
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-extrabold uppercase text-[10px] tracking-wider opacity-60">
