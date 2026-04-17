@@ -1,9 +1,13 @@
 import React from 'react';
+import ExitIntent from '@/components/ExitIntent';
+import DarkKitchen from '@/components/DarkKitchen';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-gray-900 font-sans selection:bg-[#FF4500] selection:text-white overflow-x-hidden">
       
+      {/* CAPTURA DE SALIDA IA */}
+      <ExitIntent />
       {/* NAVBAR */}
       <nav className="absolute top-0 w-full z-50 border-b border-white/10 bg-black/20 backdrop-blur-sm">
         <div className="flex justify-between items-center py-5 px-8 max-w-7xl mx-auto">
@@ -179,44 +183,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 5: DARK KITCHEN ECOSYSTEM (DEEPLY ENRICHED) */}
-      <section className="py-24 bg-white border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center max-w-4xl mx-auto mb-20 space-y-6">
-            <div className="text-[#FF4500] font-bold tracking-widest uppercase">Evolución Radical</div>
-            <h2 className="text-4xl lg:text-6xl font-black leading-tight">De cocina de barrio a <br/>Imperio de Delivery.</h2>
-            <p className="text-xl text-gray-600">
-              ¿Tienes una cocina equipada? Te montamos el ecosistema definitivo de una Dark Kitchen. Crea marcas virtuales que solo existen en internet, aprovecha tus ingredientes y multiplica tu flujo de caja sin pagar más alquiler ni luz.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
-              <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🍔</div>
-              <h3 className="text-2xl font-bold mb-4">Marcas Virtuales (Cero Mermas)</h3>
-              <p className="text-gray-600 flex-1">¿Vendes pollo asado? Te creamos una marca de alitas crujientes y otra de hamburguesas de pollo. Operan desde tu misma plancha, usando tus mismos ingredientes. <strong className="text-gray-900">Reduces mermas al 0% y multiplicas ingresos</strong> sin abrir locales nuevos.</p>
-            </div>
-            
-            <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
-              <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">🛵</div>
-              <h3 className="text-2xl font-bold mb-4">App & Flota (Flujo de Caja)</h3>
-              <p className="text-gray-600 flex-1">Cortamos la hemorragia de las comisiones abusivas. Te desarrollamos tu propia App de pedidos. <strong className="text-gray-900">El dinero entra directo a tu cuenta al instante</strong> (sin esperar una semana a que te pague Glovo). Además, te conectamos con tu propia flota de repartidores.</p>
-            </div>
-
-            <div className="bg-[#FDFCF8] p-8 rounded-[2rem] border border-gray-200 group hover:border-[#FF4500] hover:shadow-2xl transition-all duration-500 flex flex-col">
-              <div className="w-16 h-16 bg-orange-100 text-[#FF4500] rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">📊</div>
-              <h3 className="text-2xl font-bold mb-4">CRM y Crecimiento</h3>
-              <p className="text-gray-600 flex-1">No vas a ciegas. Sabrás qué cliente compra más y qué platos te dan más rentabilidad. Lanzaremos <strong className="text-gray-900">ofertas automáticas por WhatsApp los martes lluviosos</strong> para asegurar que tu caja nunca deje de sonar.</p>
-            </div>
-          </div>
-          
-          <div className="mt-12 text-center">
-            <a href="https://wa.me/34611499674?text=Hola,%20quiero%20crear%20mi%20imperio%20Dark%20Kitchen%20con%20marcas%20virtuales." className="inline-block bg-gray-900 text-white px-10 py-5 rounded-full font-bold text-xl hover:bg-[#FF4500] hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-              Analizar mi rentabilidad Dark Kitchen
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* SECCIÓN DARK KITCHEN MODULARIZADA */}
+      <DarkKitchen />
 
       {/* SUCCESS STORY 2: QR MENUS */}
       <section className="py-12 bg-[#FF4500] text-white">

@@ -15,10 +15,13 @@
 4.  **Eficiencia Webhook**: ✅ El orquestador responde `200 OK` de inmediato; procesamiento Gemini en background.
 5.  **Trazabilidad**: ✅ Carpeta `/project_state/` creada y activa.
 
-## 🚀 Implementaciones Fase 1 (Sincronización)
-- [x] **UI & Copy**: Actualización de precios y textos con tono de venta agresivo B2B.
-- [x] **Backend Modular**: Creación de `src/lib/bot-logic.ts` y `src/lib/meta-api.ts`.
 - [x] **Webhook Orchestration**: Refactorización de `src/app/api/webhook/route.ts`.
+
+## 🚀 Implementaciones Fase 2 (Conversión y Modularidad)
+- [x] **ExitIntent Component**: Captura de leads por intención de salida (Desktop/Mobile) con bono de 50€ Ads.
+- [x] **Refactorización modular**: Extracción de `DarkKitchen.tsx` para reducir deuda técnica y acoplamiento.
+- [x] **Copy B2B Agresivo**: Enfoque en "Activos Ociosos" y "Calculador de Hemorragia".
+- [x] **Optimización Anti-Monolito**: `page.tsx` reducido de 373 a 340 líneas (Fase 1 de modularización).
 
 ## 🔧 Corrección de Estabilidad (Build Vercel)
 - **Error Auditado**: `Error: supabaseUrl is required.` (Fase de recolección de datos Next.js).
