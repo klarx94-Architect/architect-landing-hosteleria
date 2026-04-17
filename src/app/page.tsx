@@ -277,26 +277,30 @@ export default function Home() {
             <p className="text-xl text-gray-600">Herramientas esenciales que se pagan solas con la primera caja del mes.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Carta Interactiva */}
             <div className="bg-[#FDFCF8] p-10 rounded-[2rem] border border-gray-200 flex flex-col hover:shadow-xl transition-shadow duration-300">
               <h3 className="font-bold text-3xl mb-2">La Carta Interactiva</h3>
-              <div className="text-5xl font-black text-gray-900 mb-6">150€ <span className="text-sm font-normal text-gray-500 tracking-normal">/ Pago Único</span></div>
+              <div className="text-5xl font-black text-gray-900 mb-6">250€ <span className="text-sm font-normal text-gray-500 tracking-normal">/ Pago Único</span></div>
               <ul className="space-y-4 text-gray-600 mb-10 text-lg flex-1">
                 <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Carta Web que da hambre</li>
                 <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Códigos QR físicos para tus mesas</li>
                 <li className="flex items-center gap-2"><span className="text-[#FF4500]">✓</span> Ficha de Google Actualizada</li>
               </ul>
-              <a href="https://wa.me/34611499674?text=Hola,%20me%20interesa%20La%20Carta%20Interactiva%20de%20150€." className="block text-center w-full border-2 border-gray-900 text-gray-900 py-4 rounded-full font-bold hover:bg-gray-900 hover:text-white transition-colors text-lg">Empezar por lo básico</a>
+              <a href="https://wa.me/34611499674?text=Hola, quiero la Carta Interactiva de 250€." className="block text-center w-full border-2 border-gray-900 text-gray-900 py-4 rounded-full font-bold hover:bg-gray-900 hover:text-white transition-colors text-lg">Empezar por lo básico</a>
             </div>
+
+            {/* El Recepcionista 24/7 */}
             <div className="bg-[#FF4500] p-10 rounded-[2rem] shadow-[0_20px_50px_rgba(255,69,0,0.3)] relative flex flex-col transform md:-translate-y-6 hover:-translate-y-8 transition-transform duration-500">
               <div className="absolute -top-4 right-10 bg-white text-[#FF4500] px-4 py-1 rounded-full text-sm font-black tracking-wide uppercase shadow-sm animate-pulse">El Ecosistema</div>
               <h3 className="font-bold text-3xl mb-2 text-white">El Recepcionista 24/7</h3>
-              <div className="text-5xl font-black text-white mb-6">350€</div>
+              <div className="text-5xl font-black text-white mb-2">650€</div>
+              <div className="text-white/80 text-sm mb-6 font-bold">+ 49€/mes de mantenimiento IA</div>
               <ul className="space-y-4 text-white/90 mb-10 text-lg flex-1">
                 <li className="font-bold text-white flex items-center gap-2">✓ Tu Web Premium Persuasiva</li>
                 <li className="font-bold text-white flex items-center gap-2">✓ Agente de IA en tu WhatsApp</li>
                 <li className="font-bold text-white flex items-center gap-2">✓ Motor de Reservas Automático</li>
               </ul>
-              <a href="https://wa.me/34611499674?text=Hola,%20quiero%20el%20sistema%20del%20Recepcionista%2024/7%20en%20mi%20WhatsApp%20por%20350€." className="block text-center w-full bg-gray-900 text-white py-5 rounded-full font-black hover:bg-black transition-colors shadow-lg text-lg">Llenar mis mesas hoy</a>
+              <a href="https://wa.me/34611499674?text=Hola, quiero el sistema del Recepcionista 24/7 por 650€." className="block text-center w-full bg-gray-900 text-white py-5 rounded-full font-black hover:bg-black transition-colors shadow-lg text-lg">Llenar mis mesas hoy</a>
             </div>
           </div>
         </div>
