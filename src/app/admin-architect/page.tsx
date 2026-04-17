@@ -1,5 +1,7 @@
 import React from 'react';
 import { supabase } from '@/lib/supabase';
+import MetricsCards from '@/components/dashboard/MetricsCards';
+import LiveMonitor from '@/components/dashboard/LiveMonitor';
 
 // FORCE NEXT.JS TO RENDER AT RUNTIME ONLY (PREVENTS VERCEL BUILD FAILURES)
 export const dynamic = 'force-dynamic';
@@ -30,34 +32,36 @@ export default async function AdminCRM() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8 font-sans text-gray-900">
+    <div className="min-h-screen bg-gray-50 p-8 font-sans text-gray-900 selection:bg-[#FF4500] selection:text-white">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-black mb-8 text-[#FF4500]">Sala de Control | Architect.Sys</h1>
+        <header className="mb-12 border-b border-gray-200 pb-8">
+          <h1 className="text-4xl lg:text-5xl font-black text-gray-900 mb-2">Sala de Análisis <span className="text-[#FF4500]">Visual</span></h1>
+          <p className="text-gray-500 font-medium">Monitorización en tiempo real de operaciones IA B2B.</p>
+        </header>
         
         {errorMsg && (
-          <div className="bg-red-100 text-red-700 p-4 rounded-xl mb-8 border border-red-200">
-            <strong>Error de Conexión:</strong> {errorMsg}
+          <div className="bg-red-50 text-red-700 p-6 rounded-2xl mb-8 border border-red-100 shadow-sm flex items-center">
+            <span className="text-2xl mr-4">⚠️</span>
+            <div>
+              <strong className="block text-lg mb-1">Error Crítico de Conexión</strong>
+              <span>{errorMsg}</span>
+            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {Object.keys(leads).map((phone) => (
-            <div key={phone} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col max-h-[600px]">
-              <h2 className="text-xl font-bold mb-4 border-b pb-2 sticky top-0 bg-white z-10">Lead: {phone}</h2>
-              <div className="space-y-4 overflow-y-auto pr-2 flex-1 flex flex-col-reverse">
-                {leads[phone].map((msg: any) => (
-                  <div key={msg.id} className={`p-3 rounded-lg text-sm ${msg.role === 'user' ? 'bg-gray-100 mr-4' : 'bg-orange-50 text-orange-900 ml-4 border border-orange-100'}`}>
-                    <span className="font-bold uppercase text-[10px] block mb-1 opacity-50">{msg.role}</span>
-                    {msg.content}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          {Object.keys(leads).length === 0 && !errorMsg && (
-             <p className="text-gray-500 italic bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">No hay conversaciones registradas aún. El webhook está a la espera.</p>
-          )}
+        {/* Módulo 1: Data Analytics */}
+        {!errorMsg && <MetricsCards chats={chats || []} />}
+
+        {/* Módulo 2: Operaciones IA en Vivo */}
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="text-2xl font-black flex items-center">
+            <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-3"></span>
+            Logs del Motor Comercial
+          </h2>
         </div>
+        
+        {!errorMsg && <LiveMonitor leads={leads} />}
+        
       </div>
     </div>
   );

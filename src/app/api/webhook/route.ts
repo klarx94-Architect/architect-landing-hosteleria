@@ -55,21 +55,25 @@ export async function POST(req: Request) {
       try {
         console.log(`[Webhook POST] Procesando mensaje de ${phone}: "${userMessage}"`);
 
-        // Registro en Supabase (User)
+        // Registro en Supabase (User) - Asumimos neutro/lead inicial para mantener consistencia
         await supabase.from('chats').insert([{ 
           phone, 
           role: 'user', 
-          content: userMessage 
+          content: userMessage,
+          intent: 'lead',
+          sentiment: 'neutro'
         }]);
 
-        // Generación de respuesta IA modular
-        const aiResponse = await generateBotResponse(phone, userMessage);
+        // Generación de respuesta IA modular y estructurada
+        const { text: aiResponse, intent, sentiment } = await generateBotResponse(phone, userMessage);
 
-        // Registro en Supabase (Assistant)
+        // Registro en Supabase (Assistant) con Metadatos
         await supabase.from('chats').insert([{ 
           phone, 
           role: 'assistant', 
-          content: aiResponse 
+          content: aiResponse,
+          intent: intent,
+          sentiment: sentiment
         }]);
 
         // Envío vía Meta API
