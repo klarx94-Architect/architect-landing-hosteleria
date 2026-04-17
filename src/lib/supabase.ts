@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim().replace(/\/$/, '');
+const supabaseKey = (process.env.SUPABASE_SERVICE_KEY || '').trim();
 
 /**
  * Resilient Supabase Initialization
@@ -12,5 +12,5 @@ export const supabase = (supabaseUrl && supabaseKey)
   : (null as unknown as ReturnType<typeof createClient>);
 
 if (!supabaseUrl || !supabaseKey) {
-  console.warn('[Supabase Lib] Environment variables missing. If this is Build Time, it is expected.');
+  console.warn('[Supabase Lib] Environment variables missing (NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_KEY).');
 }
