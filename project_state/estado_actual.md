@@ -20,6 +20,13 @@
 - [x] **Backend Modular**: Creación de `src/lib/bot-logic.ts` y `src/lib/meta-api.ts`.
 - [x] **Webhook Orchestration**: Refactorización de `src/app/api/webhook/route.ts`.
 
+## 🔧 Corrección de Estabilidad (Build Vercel)
+- **Error Auditado**: `Error: supabaseUrl is required.` (Fase de recolección de datos Next.js).
+- **Diagnóstico**: Next.js intentaba pre-renderizar el webhook estáticamente, disparando la validación del SDK de Supabase antes de tener las variables de entorno cargadas.
+- **Acciones Realizadas**:
+    1.  **Supabase Resiliente**: Modificado `src/lib/supabase.ts` para evitar el crash si faltan las claves (modo Build).
+    2.  **Ruta Dinámica**: Añadido `force-dynamic` a `src/app/api/webhook/route.ts` para saltar el análisis estático.
+
 ## 📌 Enlaces del Proyecto
 - **Live URL**: https://architect-landing-hosteleria.vercel.app/
 - **GitHub**: https://github.com/klarx94-Architect/architect-landing-hosteleria
