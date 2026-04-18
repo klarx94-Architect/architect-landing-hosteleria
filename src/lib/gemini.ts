@@ -9,8 +9,8 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
   if (!apiKey) throw new Error("GEMINI_API_KEY no configurada.");
 
   // Usamos Gemini 2.0 Flash para máxima velocidad y razonamiento comercial
-  const model = "gemini-2.0-flash"; 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const model = "gemini-2.5-flash"; 
+  const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
 
   const response = await fetch(url, {
     method: 'POST',
