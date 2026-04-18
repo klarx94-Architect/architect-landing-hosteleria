@@ -4,7 +4,7 @@
  * Protocolo: Anti-Monolito (Lógica fragmentada).
  */
 
-import { model } from './gemini';
+import { generateGeminiContent } from './gemini';
 
 export async function generateBotResponse(phone: string, userMessage: string): Promise<{ text: string, intent: string, sentiment: string }> {
   // Configuración de personalidad: Director Comercial Senior IA de Architect.Sys
@@ -40,18 +40,13 @@ export async function generateBotResponse(phone: string, userMessage: string): P
   const prompt = `${systemInstruction}\n\nMensaje del usuario (${phone}): "${userMessage}"\n\nRespuesta JSON:`;
 
   try {
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    });
-    const textRes = await result.response.text();
+    const textRes = await generateGeminiContent(prompt, true);
     
     let parsed;
     try {
       parsed = JSON.parse(textRes);
     } catch {
+       console.error('[Bot Logic] JSON Parse Error. Raw:', textRes);
        return {
          text: "Entiendo. Estamos optimizando nuestros fogones digitales. ¿Podemos agendar una auditoría gratuita? 🚀",
          intent: "lead",
