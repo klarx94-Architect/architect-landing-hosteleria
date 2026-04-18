@@ -43,48 +43,56 @@ export async function POST(req: Request) {
     // 1. RESPUESTA INMEDIATA A META (Evita bloqueos y reintentos)
     const fastResponse = NextResponse.json({ status: 'ok' });
 
-    // 2. PROCESAMIENTO ASÍNCRONO (Background Task)
-    // No usamos await aquí para retornar fastResponse de inmediato.
-    (async () => {
-      const phone = messageEntry.from;
-      const userMessage = messageEntry.text?.body;
-      const phoneNumberId = metadata?.phone_number_id;
+    // 2. PROCESAMIENTO (MODO DIAGNÓSTICO: AWAIT PARA CAPTURAR ERROR)
+    const phone = messageEntry.from;
+    const userMessage = messageEntry.text?.body;
+    const phoneNumberId = metadata?.phone_number_id;
 
-      if (!phone || !userMessage || !phoneNumberId) return;
+    if (!phone || !userMessage || !phoneNumberId) {
+      return NextResponse.json({ status: 'Ignored', reason: 'Missing data fields' });
+    }
 
-      try {
-        console.log(`[Webhook POST] Procesando mensaje de ${phone}: "${userMessage}"`);
+    try {
+      if (!supabase) throw new Error("Cliente Supabase (Server) no inicializado. Revisa SUPABASE_SERVICE_KEY.");
 
-        // Registro en Supabase (User) - Asumimos neutro/lead inicial para mantener consistencia
-        await supabase.from('chats').insert([{ 
-          phone, 
-          role: 'user', 
-          content: userMessage,
-          intent: 'lead',
-          sentiment: 'neutro'
-        }]);
+      // Registro en Supabase (User)
+      const { error: userError } = await supabase.from('chats').insert([{ 
+        phone, 
+        role: 'user', 
+        content: userMessage,
+        intent: 'lead',
+        sentiment: 'neutro'
+      }]);
 
-        // Generación de respuesta IA modular y estructurada
-        const { text: aiResponse, intent, sentiment } = await generateBotResponse(phone, userMessage);
+      if (userError) throw new Error(`Error en Insert (User): ${userError.message}`);
 
-        // Registro en Supabase (Assistant) con Metadatos
-        await supabase.from('chats').insert([{ 
-          phone, 
-          role: 'assistant', 
-          content: aiResponse,
-          intent: intent,
-          sentiment: sentiment
-        }]);
+      // Generación de respuesta IA
+      const { text: aiResponse, intent, sentiment } = await generateBotResponse(phone, userMessage);
 
-        // Envío vía Meta API
-        await sendWhatsAppMessage(phoneNumberId, phone, aiResponse);
+      // Registro en Supabase (Assistant)
+      const { error: aiError } = await supabase.from('chats').insert([{ 
+        phone, 
+        role: 'assistant', 
+        content: aiResponse,
+        intent: intent,
+        sentiment: sentiment
+      }]);
 
-      } catch (innerError) {
-        console.error('[Webhook Background Process Error]', innerError);
-      }
-    })();
+      if (aiError) throw new Error(`Error en Insert (Assistant): ${aiError.message}`);
 
-    return fastResponse; 
+      // Envío vía Meta API
+      await sendWhatsAppMessage(phoneNumberId, phone, aiResponse);
+
+      return NextResponse.json({ status: 'ok', detail: 'Procesado con éxito' });
+
+    } catch (innerError: any) {
+      console.error('[Webhook Process Error]', innerError);
+      return NextResponse.json({ 
+        error: 'Process Error', 
+        message: innerError.message,
+        details: innerError
+      }, { status: 500 });
+    }
   } catch (error: any) {
     console.error('[Webhook POST Error]', error);
     return NextResponse.json({ 
