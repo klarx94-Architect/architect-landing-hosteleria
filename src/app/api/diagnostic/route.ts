@@ -21,7 +21,8 @@ export async function GET() {
     return NextResponse.json({ 
       status: 'error', 
       error_message: error.message,
-      key_present: !!process.env.GEMINI_API_KEY
-    }, { status: 500 });
+      key_present: !!process.env.GEMINI_API_KEY,
+      key_hint: process.env.GEMINI_API_KEY ? `Sufijo: ${process.env.GEMINI_API_KEY.slice(-4)}` : 'AUSENTE'
+    }, { status: 200 });
   }
 }
