@@ -1,15 +1,15 @@
 /**
  * src/lib/gemini.ts
  * Motor de IA de alto rendimiento mediante llamadas REST directas.
- * Protocolo: Latencia Cero y Persistencia.
+ * Protocolo: Latencia Cero y Persistencia (Modelo Gemini 2.5 Flash).
  */
 
 export async function generateGeminiContent(prompt: string, jsonMode: boolean = false) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY no configurada.");
 
-  // Usamos Gemini 1.5 Flash (v1beta soporta response_mime_type)
-  const model = "gemini-1.5-flash"; 
+  // Modelo Gemini 2.5 Flash (GA 2026)
+  const model = "gemini-2.5-flash"; 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   const response = await fetch(url, {
