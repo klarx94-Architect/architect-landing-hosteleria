@@ -85,8 +85,12 @@ export async function POST(req: Request) {
     })();
 
     return fastResponse; 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[Webhook POST Error]', error);
-    return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Internal Error', 
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    }, { status: 500 });
   }
 }
