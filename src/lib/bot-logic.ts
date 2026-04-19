@@ -44,18 +44,20 @@ export async function generateBotResponse(phone: string, userMessage: string): P
     
     let parsed;
     try {
-      parsed = JSON.parse(textRes);
+      // Limpieza de posibles artefactos de markdown que Gemini a veces añade por error
+      const cleanJson = textRes.replace(/```json|```/g, '').trim();
+      parsed = JSON.parse(cleanJson);
     } catch {
        console.error('[Bot Logic] JSON Parse Error. Raw:', textRes);
        return {
-         text: "Entiendo. Estamos optimizando nuestros fogones digitales. ¿Podemos agendar una auditoría gratuita? 🚀",
+         text: "Entiendo perfectamente. Estamos analizando cómo optimizar tu rentabilidad ahora mismo. ¿Te gustaría agendar una breve llamada de 5 min para ver el ROI exacto? 🚀",
          intent: "lead",
-         sentiment: "neutro"
+         sentiment: "positivo"
        };
     }
     
     return {
-      text: parsed.response || "Hubo un error de procesamiento. Escríbenos de nuevo.",
+      text: parsed.response || "Hola. Estoy analizando tu consulta para darte la mejor solución técnica. Dame un momento o dime si prefieres que te llame un consultor. ✅",
       intent: parsed.intent || "lead",
       sentiment: parsed.sentiment || "neutro"
     };
@@ -63,7 +65,7 @@ export async function generateBotResponse(phone: string, userMessage: string): P
   } catch (error) {
     console.error('[Bot Logic] Error en generación IA:', error);
     return {
-      text: "La conexión a la central está bloqueada. ¿Te atiendo por aquí en un momento? ✅",
+      text: "Hola. Estamos recibiendo muchas consultas en este momento. Por favor, deja tu duda aquí y te responderé personalmente en unos minutos. ¡Gracias por tu paciencia! 🙏",
       intent: "lead",
       sentiment: "neutro"
     };
