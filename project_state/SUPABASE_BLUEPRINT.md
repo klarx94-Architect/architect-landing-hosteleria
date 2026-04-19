@@ -18,7 +18,10 @@ CREATE TABLE IF NOT EXISTS public.chats (
     role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
     content TEXT NOT NULL,
     intent TEXT DEFAULT 'lead' CHECK (intent IN ('venta', 'lead', 'rechazo')),
-    sentiment TEXT DEFAULT 'neutro' CHECK (sentiment IN ('positivo', 'negativo', 'neutro'))
+    sentiment TEXT DEFAULT 'neutro' CHECK (sentiment IN ('positivo', 'negativo', 'neutro')),
+    topic TEXT DEFAULT 'Otro',
+    closing_stage TEXT DEFAULT 'atencion',
+    strategic_note TEXT
 );
 
 -- Índices de Rendimiento para la Sala de Análisis (Dashboard)

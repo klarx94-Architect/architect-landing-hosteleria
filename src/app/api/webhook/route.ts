@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       }
 
       // 3. GENERAR RESPUESTA IA
-      const { text: aiResponse, intent, sentiment } = await generateBotResponse(phone, userMessage);
+      const { text: aiResponse, intent, sentiment, topic, closing_stage, strategic_note } = await generateBotResponse(phone, userMessage);
 
       // Registro en Supabase (Assistant)
       const { error: aiError } = await supabase.from('chats').insert([{ 
@@ -89,7 +89,10 @@ export async function POST(req: Request) {
         role: 'assistant', 
         content: aiResponse,
         intent: intent,
-        sentiment: sentiment
+        sentiment: sentiment,
+        topic: topic,
+        closing_stage: closing_stage,
+        strategic_note: strategic_note
       }]);
 
       if (aiError) throw new Error(`Error en Insert (Assistant): ${aiError.message}`);

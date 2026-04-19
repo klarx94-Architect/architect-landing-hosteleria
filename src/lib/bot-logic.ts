@@ -49,9 +49,12 @@ export async function generateBotResponse(phone: string, userMessage: string): P
 
     ESTRUCTURA DE RESPUESTA (JSON PURO):
     {
-      "response": "Tu respuesta persuasiva aquí, continuando el hilo de la conversación.",
+      "response": "Tu respuesta persuasiva aquí.",
       "intent": "venta" | "lead" | "rechazo",
-      "sentiment": "positivo" | "negativo" | "neutro"
+      "sentiment": "positivo" | "negativo" | "neutro",
+      "topic": "Precio" | "Reserva" | "ROI" | "Duda Técnica" | "Otro",
+      "closing_stage": "atencion" | "interes" | "deseo" | "accion",
+      "strategic_note": "Breve nota de por qué tomaste esta decisión comercial."
     }
 
     REGLA DE CLOSER: Si el cliente duda, usa el "Bono de 50€ en Ads" para cerrar el compromiso hoy.
@@ -64,22 +67,25 @@ export async function generateBotResponse(phone: string, userMessage: string): P
     
     let parsed;
     try {
-      // Limpieza de posibles artefactos de markdown que Gemini a veces añade por error
       const cleanJson = textRes.replace(/```json|```/g, '').trim();
       parsed = JSON.parse(cleanJson);
     } catch {
-       console.error('[Bot Logic] JSON Parse Error. Raw:', textRes);
        return {
          text: "Entiendo perfectamente. Estamos analizando cómo optimizar tu rentabilidad ahora mismo. ¿Te gustaría agendar una breve llamada de 5 min para ver el ROI exacto? 🚀",
          intent: "lead",
-         sentiment: "positivo"
+         sentiment: "positivo",
+         topic: "ROI",
+         closing_stage: "interes"
        };
     }
     
     return {
-      text: parsed.response || "Hola. Estoy analizando tu consulta para darte la mejor solución técnica. Dame un momento o dime si prefieres que te llame un consultor. ✅",
+      text: parsed.response || "Estoy analizando tu consulta...",
       intent: parsed.intent || "lead",
-      sentiment: parsed.sentiment || "neutro"
+      sentiment: parsed.sentiment || "neutro",
+      topic: parsed.topic || "Otro",
+      closing_stage: parsed.closing_stage || "atencion",
+      strategic_note: parsed.strategic_note || ""
     };
 
   } catch (error) {
