@@ -8,8 +8,8 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY no configurada.");
 
-  // Modelo Gemini 1.5 Flash (Industrial Stable)
-  const model = "gemini-1.5-flash"; 
+  // Modelo Gemini 1.5 Flash (Latest Stable)
+  const model = "gemini-1.5-flash-latest"; 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   // Implementación de Timeout de 8 segundos para evitar bloqueos en Vercel
