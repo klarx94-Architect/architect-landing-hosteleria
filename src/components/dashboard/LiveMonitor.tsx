@@ -23,6 +23,12 @@ export default function LiveMonitor() {
     if (error) {
       console.error("Error al pausar el bot:", error);
       setBotSettings(prev => ({ ...prev, [phone]: currentState }));
+      
+      if (error.code === '42P01') {
+        alert("CRÍTICO: La tabla 'bot_settings' no existe en Supabase. Debes ejecutar el script SQL que te envié para que este botón funcione.");
+      } else {
+        alert("Error de Conexión: " + error.message);
+      }
     }
   };
 
