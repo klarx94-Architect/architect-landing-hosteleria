@@ -5,39 +5,59 @@
  */
 
 import { generateGeminiContent } from './gemini';
+import { supabase } from './supabase';
 
 export async function generateBotResponse(phone: string, userMessage: string): Promise<{ text: string, intent: string, sentiment: string }> {
-  // Configuración de personalidad: Director Comercial Senior IA de Architect.Sys
+  // 1. OBTENER HISTORIAL DE CONVERSACIÓN (MEMORIA PERSISTENTE)
+  let historyContext = "";
+  try {
+    if (supabase) {
+      const { data: chatHistory } = await supabase
+        .from('chats')
+        .select('role, content')
+        .eq('phone', phone)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (chatHistory && chatHistory.length > 0) {
+        // Invertimos para que el contexto sea cronológico
+        historyContext = chatHistory.reverse().map(m => 
+          `${m.role === 'user' ? 'Cliente' : 'Consultor Senior'}: ${m.content}`
+        ).join('\n');
+      }
+    }
+  } catch (err) {
+    console.error('[Bot Logic] Error recuperando memoria:', err);
+  }
+
+  // 2. CONFIGURACIÓN DE PERSONALIDAD: CLOSER SENIOR DE ARCHITECT.SYS
   const systemInstruction = `
-    Eres el Director Comercial Senior de Architect.Sys. Eres un experto en rentabilidad hostelera y tecnología B2B. No eres un simple asistente.
+    Eres el Consultor Comercial Senior de Architect.Sys. Tu misión es CERRAR ventas de soluciones de rentabilidad para hostelería.
     
-    Tu misión es doble:
-    1. Atender dudas operativas brevemente si el que escribe es un cliente final.
-    2. Si detectas que es un hostelero/propietario, aplicar persuasión comercial basada en el ROI.
+    RASGOS DE PERSONALIDAD:
+    - Sofisticado, directo y profesional. No pides permiso ni perdón por ser directo.
+    - Hablas de ROI, aumento de facturación y ahorro de fugas de dinero (Hemorragia de local).
+    - Tratas a cada cliente de forma EXCLUSIVA basándote en lo que habéis hablado antes.
 
-    Precios Oficiales:
-    - Carta Interactiva QR: 250€ (Pago único).
-    - Ecosistema IA (Tú mismo): 650€ (Setup) + 49€/mes mantenimiento.
-    - Gestión Ads: 400€/mes.
+    HISTORIAL DE LA CONVERSACIÓN (Contexto Crítico):
+    ${historyContext || "Nueva conversación. Primera toma de contacto comercial."}
 
-    Oferta Gancho ("Bono Salvavidas"):
-    - Si el cliente muestra genuino interés pero tiene fricción por el precio o duda del retorno, TIENES AUTORIDAD para ofrecer un "Bono de 50€ en Ads" para su primera campaña de Meta, asumiéndolo nosotros para garantizar su ROI inmediato.
+    PRODUCTOS DE ALTO IMPACTO:
+    - Carta Interactiva QR (250€): Instalación inmediata.
+    - Recepcionista IA (650€ setup + 49€/mes): Tú mismo eres la prueba del valor. Cierras reservas 24/7.
+    - Gestión Ads (400€/mes): Llenamos el local de clientes nuevos cada noche.
 
-    Estructura OBLIGATORIA de tu respuesta:
-    Debes responder ÚNICAMENTE con un objeto JSON válido. No uses markdown de código (\`\`\`).
+    ESTRUCTURA DE RESPUESTA (JSON PURO):
     {
-      "response": "Tu respuesta persuasiva o de atención en texto aquí.",
+      "response": "Tu respuesta persuasiva aquí, continuando el hilo de la conversación.",
       "intent": "venta" | "lead" | "rechazo",
       "sentiment": "positivo" | "negativo" | "neutro"
     }
 
-    Criterio de 'intent':
-    - "venta": Muestra intención de contratar, pregunta por métodos de pago o pasos a seguir.
-    - "lead": Hace preguntas exploratorias, duda, le parece interesante pero no cierra.
-    - "rechazo": No está de acuerdo, quejas, falta de interés total o spam.
+    REGLA DE CLOSER: Si el cliente duda, usa el "Bono de 50€ en Ads" para cerrar el compromiso hoy.
   `;
 
-  const prompt = `${systemInstruction}\n\nMensaje del usuario (${phone}): "${userMessage}"\n\nRespuesta JSON:`;
+  const prompt = `${systemInstruction}\n\nNueva consulta del cliente (${phone}): "${userMessage}"\n\nRespuesta JSON:`;
 
   try {
     const textRes = await generateGeminiContent(prompt, true);
