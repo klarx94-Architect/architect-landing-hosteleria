@@ -97,27 +97,57 @@ export default function LiveMonitor() {
         const isEnabled = botSettings[phone] !== false;
         
         return (
-          <div key={phone} className="bg-white border border-zinc-100 rounded-[2rem] overflow-hidden shadow-sm flex flex-col h-[500px] transition-all hover:shadow-xl hover:shadow-zinc-200/50">
-            <div className="p-5 border-b border-zinc-50 bg-white flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-zinc-800">{phone}</h3>
-                <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">Canal Directo</span>
+          <div key={phone} className="bg-white border border-zinc-100 rounded-[2rem] overflow-hidden shadow-sm flex flex-col h-[520px] transition-all hover:shadow-xl hover:shadow-zinc-200/50">
+            <div className="p-5 border-b border-zinc-50 bg-white flex justify-between items-start gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-bold text-zinc-800 leading-none">{phone}</h3>
+                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter shadow-sm border ${
+                    conversation[0]?.intent === 'venta' 
+                    ? 'bg-green-500 text-white border-green-600' 
+                    : conversation[0]?.intent === 'rechazo'
+                    ? 'bg-zinc-100 text-zinc-400 border-zinc-200'
+                    : 'bg-orange-500 text-white border-orange-600'
+                  }`}>
+                    {conversation[0]?.intent || 'lead'}
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mt-2">
+                  <span className="bg-zinc-50 text-zinc-400 border border-zinc-100 px-2 py-0.5 rounded-md text-[8px] font-bold uppercase">
+                    Topic: {conversation[0]?.topic || 'Explorando'}
+                  </span>
+                  <span className="bg-blue-50 text-blue-500 border border-blue-100 px-2 py-0.5 rounded-md text-[8px] font-bold uppercase">
+                    Stage: {conversation[0]?.closing_stage || 'atencion'}
+                  </span>
+                </div>
               </div>
+
               <button 
                 onClick={() => toggleBot(phone, isEnabled)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all shadow-sm ${
+                className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase transition-all shadow-sm shrink-0 ${
                   isEnabled 
                   ? 'bg-zinc-100 text-zinc-400 hover:bg-zinc-200' 
-                  : 'bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/20 shadow-lg'
+                  : 'bg-orange-600 text-white hover:bg-orange-700 shadow-orange-600/20 shadow-lg'
                 }`}
               >
                 {isEnabled ? 'Bot On' : 'Bot Paused'}
               </button>
             </div>
+
+            {/* NOTA ESTRATÉGICA (Ducto de Pensamiento IA) */}
+            {conversation.find(m => m.role === 'assistant')?.strategic_note && (
+              <div className="px-5 py-2 bg-orange-50/30 border-b border-orange-50">
+                <p className="text-[9px] text-orange-600 font-bold leading-tight">
+                  <span className="uppercase opacity-50 mr-1 italic">Mindset:</span> 
+                  "{conversation.find(m => m.role === 'assistant')?.strategic_note}"
+                </p>
+              </div>
+            )}
             
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-zinc-50/30 flex flex-col-reverse">
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-zinc-50/20 flex flex-col-reverse">
               {conversation.map((msg: any) => (
-                <div key={msg.id} className={`p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm ${
+                <div key={msg.id} className={`p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm transition-all hover:scale-[1.02] ${
                   msg.role === 'assistant' 
                   ? 'bg-white text-zinc-600 self-start border border-zinc-100' 
                   : 'bg-orange-600 text-white self-end font-medium'
