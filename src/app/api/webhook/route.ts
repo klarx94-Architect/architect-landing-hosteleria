@@ -32,21 +32,21 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     
-    // Extracción de datos según la estructura de Meta v19.0+
-    const messageEntry = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-    const metadata = body.entry?.[0]?.changes?.[0]?.value?.metadata;
+    // Extracción híbrida: Soporta entrada directa de Meta y reenvío desde Make
+    const messageEntry = body.entry?.[0]?.changes?.[0]?.value?.messages?.[0] || body.messages?.[0] || body;
+    const metadata = body.entry?.[0]?.changes?.[0]?.value?.metadata || body.metadata;
 
-    if (!messageEntry) {
+    if (!messageEntry || (!messageEntry.text && !messageEntry.body && !messageEntry.content)) {
       return NextResponse.json({ status: 'Ignored', reason: 'No message content' });
     }
 
     // 1. RESPUESTA INMEDIATA A META (Evita bloqueos y reintentos)
     const fastResponse = NextResponse.json({ status: 'ok' });
 
-    // 2. PROCESAMIENTO (MODO DIAGNÓSTICO: AWAIT PARA CAPTURAR ERROR)
-    const phone = messageEntry.from;
-    const userMessage = messageEntry.text?.body;
-    const phoneNumberId = metadata?.phone_number_id;
+    // 2. PROCESAMIENTO
+    const phone = messageEntry.from || messageEntry.sender || messageEntry.phone;
+    const userMessage = messageEntry.text?.body || messageEntry.body || messageEntry.content;
+    const phoneNumberId = metadata?.phone_number_id || process.env.WHATSAPP_PHONE_NUMBER_ID;
 
     if (!phone || !userMessage || !phoneNumberId) {
       return NextResponse.json({ status: 'Ignored', reason: 'Missing data fields' });
