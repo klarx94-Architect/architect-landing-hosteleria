@@ -66,7 +66,21 @@ export async function POST(req: Request) {
 
       if (userError) throw new Error(`Error en Insert (User): ${userError.message}`);
 
-      // Generación de respuesta IA
+      // 2. VERIFICAR SI EL BOT ESTÁ ACTIVADO PARA ESTE NÚMERO
+      const { data: settings } = await supabase
+        .from('bot_settings')
+        .select('enabled')
+        .eq('phone', phone)
+        .maybeSingle();
+
+      const isBotEnabled = settings?.enabled !== false; // Por defecto encendido
+
+      if (!isBotEnabled) {
+        console.log(`[Webhook] Bot pausado para: ${phone}. Registro completo sin respuesta IA.`);
+        return NextResponse.json({ status: 'ok', detail: 'Bot Paused for this contact' });
+      }
+
+      // 3. GENERAR RESPUESTA IA
       const { text: aiResponse, intent, sentiment } = await generateBotResponse(phone, userMessage);
 
       // Registro en Supabase (Assistant)
