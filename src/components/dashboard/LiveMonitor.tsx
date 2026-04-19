@@ -25,7 +25,7 @@ export default function LiveMonitor() {
       setBotSettings(prev => ({ ...prev, [phone]: currentState }));
       
       if (error.code === '42P01') {
-        alert("CRÍTICO: La tabla 'bot_settings' no existe en Supabase. Debes ejecutar el script SQL que te envié para que este botón funcione.");
+        alert("CRÍTICO: La tabla 'bot_settings' no existe en Supabase. Debes ejecutar el script SQL para que este botón funcione.");
       } else {
         alert("Error de Conexión: " + error.message);
       }
@@ -75,8 +75,8 @@ export default function LiveMonitor() {
     };
   }, []);
 
-  if (errorMsg) return <div className="p-8 text-red-400 bg-zinc-900 rounded-xl border border-red-500/20">Error de Red: {errorMsg}</div>;
-  if (loading) return <div className="p-12 text-center text-zinc-500 animate-pulse">Sincronizando flujos de Meta...</div>;
+  if (errorMsg) return <div className="p-8 text-red-600 bg-white rounded-xl border border-red-100 shadow-sm">Error de Red: {errorMsg}</div>;
+  if (loading) return <div className="p-12 text-center text-zinc-400 animate-pulse font-bold uppercase tracking-widest text-[10px]">Sincronizando flujos de Meta...</div>;
 
   const leadsObj = chats.reduce((acc: any, chat: any) => {
       if (!acc[chat.phone]) acc[chat.phone] = [];
@@ -87,42 +87,42 @@ export default function LiveMonitor() {
   const phones = Object.keys(leadsObj);
 
   if (phones.length === 0) {
-    return <div className="p-12 text-center text-zinc-500 border border-zinc-800 rounded-2xl bg-zinc-950">Esperando primer mensaje...</div>;
+    return <div className="p-12 text-center text-zinc-400 border border-zinc-100 rounded-[2rem] bg-white italic">Esperando primer mensaje entrante...</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 bg-zinc-50 rounded-[2.5rem]">
       {phones.map((phone) => {
         const conversation = leadsObj[phone];
         const isEnabled = botSettings[phone] !== false;
         
         return (
-          <div key={phone} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[500px]">
-            <div className="p-4 border-b border-zinc-800 bg-zinc-950 flex justify-between items-center">
+          <div key={phone} className="bg-white border border-zinc-100 rounded-[2rem] overflow-hidden shadow-sm flex flex-col h-[500px] transition-all hover:shadow-xl hover:shadow-zinc-200/50">
+            <div className="p-5 border-b border-zinc-50 bg-white flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-white">{phone}</h3>
-                <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Canal Directo</span>
+                <h3 className="font-bold text-zinc-800">{phone}</h3>
+                <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">Canal Directo</span>
               </div>
               <button 
                 onClick={() => toggleBot(phone, isEnabled)}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${
+                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all shadow-sm ${
                   isEnabled 
-                  ? 'bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500' 
-                  : 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white'
+                  ? 'bg-zinc-100 text-zinc-400 hover:bg-zinc-200' 
+                  : 'bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/20 shadow-lg'
                 }`}
               >
                 {isEnabled ? 'Bot On' : 'Bot Paused'}
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-900/50 flex flex-col-reverse">
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-zinc-50/30 flex flex-col-reverse">
               {conversation.map((msg: any) => (
-                <div key={msg.id} className={`p-3 rounded-xl max-w-[85%] ${
+                <div key={msg.id} className={`p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm ${
                   msg.role === 'assistant' 
-                  ? 'bg-zinc-800 text-zinc-300 self-start border border-zinc-700/50' 
-                  : 'bg-blue-600/10 text-blue-400 self-end border border-blue-500/20'
+                  ? 'bg-white text-zinc-600 self-start border border-zinc-100' 
+                  : 'bg-orange-600 text-white self-end font-medium'
                 }`}>
-                  <p className="text-xs leading-relaxed">{msg.content}</p>
+                  <p>{msg.content}</p>
                 </div>
               ))}
             </div>
