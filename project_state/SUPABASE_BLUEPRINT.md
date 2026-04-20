@@ -15,7 +15,11 @@ CREATE TABLE IF NOT EXISTS public.chats (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     intent TEXT DEFAULT 'lead' CHECK (intent = ANY (ARRAY['venta','lead','rechazo'])),
     sentiment TEXT DEFAULT 'neutro' CHECK (sentiment = ANY (ARRAY['positivo','negativo','neutro'])),
-    owner_id UUID -- Gestionado por set_chats_owner_id()
+    owner_id UUID, -- Gestionado por set_chats_owner_id()
+    topic TEXT DEFAULT 'Otro',
+    closing_stage TEXT DEFAULT 'atencion',
+    strategic_note TEXT,
+    status TEXT DEFAULT 'active'
 );
 
 -- TABLA CONFIGURACIÓN: bot_settings

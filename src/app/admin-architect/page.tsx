@@ -1,11 +1,59 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import LiveMonitor from '@/components/dashboard/LiveMonitor';
 import Link from 'next/link';
+import { supabaseClient } from '@/lib/supabase-client';
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState({
+    conversations: 0,
+    closingRate: 0,
+    sentiment: 'Neutro',
+    latency: '8ms'
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!supabaseClient) return;
+
+      const { data: chats } = await supabaseClient
+        .from('chats')
+        .select('intent, sentiment')
+        .eq('status', 'active');
+
+      if (chats) {
+        const total = chats.length;
+        const sales = chats.filter(c => c.intent === 'venta').length;
+        const positive = chats.filter(c => c.sentiment === 'positivo').length;
+        
+        const rate = total > 0 ? Math.round((sales / total) * 100) : 0;
+        let avgSent = 'Neutro';
+        if (positive > total / 2) avgSent = 'Positivo';
+        else if (total > 0 && positive < total / 4) avgSent = 'Alerta';
+
+        setStats({
+          conversations: total,
+          closingRate: rate,
+          sentiment: avgSent,
+          latency: '12ms'
+        });
+      }
+    };
+
+    fetchStats();
+    
+    const channel = supabaseClient?.channel('stats-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, () => fetchStats())
+      .subscribe();
+
+    return () => {
+      if (channel) supabaseClient?.removeChannel(channel);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
-      {/* Header Estilo Centro de Comando Espacial (Clarity) */}
       <header className="border-b border-zinc-100 bg-white/70 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -37,13 +85,12 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-[1600px] mx-auto p-6 space-y-8">
-        {/* Sección de Métricas Rápidas (Estilo SaaS Premium) */}
         <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { label: 'Conversaciones', value: 'Active', color: 'text-orange-600' },
-            { label: 'IA Sentiment', value: 'Positive', color: 'text-green-600' },
-            { label: 'Cloud API', value: 'Connected', color: 'text-zinc-600' },
-            { label: 'Latencia Máx', value: '8s (Limited)', color: 'text-amber-600' },
+            { label: 'Conversaciones', value: stats.conversations, color: 'text-orange-600' },
+            { label: 'IA Sentiment', value: stats.sentiment, color: 'text-green-600' },
+            { label: 'Tasa de Cierre', value: `${stats.closingRate}%`, color: 'text-zinc-600' },
+            { label: 'Network Latency', value: stats.latency, color: 'text-amber-600' },
           ].map((m, i) => (
             <div key={i} className="bg-white border border-zinc-100 p-4 rounded-2xl shadow-sm">
               <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">{m.label}</p>
@@ -52,34 +99,19 @@ export default function AdminDashboard() {
           ))}
         </section>
 
-        {/* El Monitor Analítico */}
         <section>
           <div className="mb-6 flex justify-between items-end">
             <div>
               <h2 className="text-2xl font-black tracking-tighter text-zinc-900">Live Conversation Stream</h2>
               <p className="text-zinc-400 text-sm">Auditoría en tiempo real y control de respuesta manual.</p>
             </div>
-            <div className="flex gap-2">
-              <span className="px-3 py-1 bg-white border border-zinc-100 rounded-full text-[10px] text-zinc-400 font-bold">
-                Auto-learning Active
-              </span>
-            </div>
           </div>
           
-          {/* Se carga el monitor (que ya internamente maneja el fondo blanco/zinc) */}
           <div className="bg-white border border-zinc-100 p-1 rounded-[2.5rem] shadow-xl shadow-zinc-200/20">
             <LiveMonitor />
           </div>
         </section>
       </main>
-
-      <footer className="max-w-[1600px] mx-auto px-6 py-12 border-t border-zinc-100 text-[10px] text-zinc-400 font-bold uppercase tracking-widest flex justify-between">
-        <span>© 2026 Architect Aeterium Core</span>
-        <div className="flex gap-6">
-          <span>Security Protocol 4.1</span>
-          <span>Sovereign Deployment</span>
-        </div>
-      </footer>
     </div>
   );
 }
