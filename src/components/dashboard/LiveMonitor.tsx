@@ -41,13 +41,24 @@ export default function LiveMonitor() {
           return;
         }
 
-        // Permitimos status 'active' O NULL (para chats antiguos)
-        const { data: chatData, error: chatError } = await supabaseClient
+        // Intento 1: Con filtro de status (Ideal)
+        let { data: chatData, error: chatError } = await supabaseClient
           .from('chats')
           .select('*')
           .or('status.eq.active,status.is.null')
           .order('created_at', { ascending: false });
         
+        // Si el error es que la columna no existe (code 42703), reintentamos sin el filtro
+        if (chatError && chatError.code === '42703') {
+          console.warn('[LiveMonitor] Columna "status" no detectada. Cargando modo compatibilidad...');
+          const fallback = await supabaseClient
+            .from('chats')
+            .select('*')
+            .order('created_at', { ascending: false });
+          chatData = fallback.data;
+          chatError = fallback.error;
+        }
+
         if (chatError) throw chatError;
 
         const { data: settingsData, error: settingsError } = await supabaseClient.from('bot_settings').select('*');

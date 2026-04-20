@@ -19,10 +19,20 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       if (!supabaseClient) return;
 
-      const { data: chats } = await supabaseClient
+      // Intento 1: Con filtro de status
+      let { data: chats, error } = await supabaseClient
         .from('chats')
         .select('intent, sentiment, topic, closing_stage, phone')
         .or('status.eq.active,status.is.null');
+
+      // Si la columna no existe, fallback a todos los registros
+      if (error && error.code === '42703') {
+        const fallback = await supabaseClient
+          .from('chats')
+          .select('intent, sentiment, topic, closing_stage, phone');
+        chats = fallback.data;
+        error = fallback.error;
+      }
 
       if (chats) {
         const total = chats.length;
