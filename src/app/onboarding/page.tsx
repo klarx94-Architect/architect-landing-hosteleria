@@ -1,33 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { supabaseClient } from '@/lib/supabase-client';
+import AuthLayer from '@/components/dashboard/AuthLayer';
 
 export default function OnboardingPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        router.push('/login');
-      } else {
-        setLoading(false);
-      }
-    };
-    checkUser();
-  }, [router]);
-
-  if (loading) return (
-    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] text-zinc-400">
-      Autenticando Nodo...
-    </div>
-  );
   return (
-    <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
+    <AuthLayer>
+      <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
       {/* BACKGROUND DECORATION (SPACE OPS STYLE) */}
       <div className="fixed inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(#FF4500 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}></div>
       
@@ -91,9 +71,12 @@ export default function OnboardingPage() {
               <p className="text-zinc-400 text-sm mb-8 max-w-sm">
                 La IA ya está configurada con **Memoria Persistente**. Cada cliente será tratado de forma exclusiva basándose en su historial.
               </p>
-              <button className="bg-orange-500 text-white text-[10px] font-black uppercase px-8 py-3 rounded-xl hover:bg-orange-600 transition-all tracking-[0.2em]">
+              <Link 
+                href="/admin-architect"
+                className="inline-block bg-orange-500 text-white text-[10px] font-black uppercase px-8 py-3 rounded-xl hover:bg-orange-600 transition-all tracking-[0.2em]"
+              >
                 Calibrar Personalidad
-              </button>
+              </Link>
             </div>
           </section>
 
@@ -137,5 +120,6 @@ export default function OnboardingPage() {
         </footer>
       </div>
     </div>
+    </AuthLayer>
   );
 }
