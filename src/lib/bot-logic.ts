@@ -30,10 +30,39 @@ export async function generateBotResponse(phone: string, userMessage: string): P
     console.error('[Bot Logic] Error recuperando memoria:', err);
   }
 
-  // 2. CONFIGURACIÓN DE PERSONALIDAD: EL CLOSER ESTRATÉGICO DE ARCHITECT.SYS
+  // 2. OBTENER CONFIGURACIÓN DE PERSONALIDAD (CALIBRACIÓN GLOBAL)
+  let config = {
+    aggressiveness: 5,
+    tone: 'Profesional',
+    skills: 'Cierre de Ventas, Diagnóstico de ROI'
+  };
+
+  try {
+    if (supabase) {
+      const { data: globalConfig } = await supabase
+        .from('bot_settings')
+        .select('aggressiveness, tone, skills')
+        .eq('phone', 'GLOBAL_CONFIG')
+        .maybeSingle();
+      
+      if (globalConfig) {
+        config = { ...config, ...globalConfig };
+      }
+    }
+  } catch (err) {
+    console.error('[Bot Logic] Error recuperando config:', err);
+  }
+
+  // 3. CONFIGURACIÓN DE PERSONALIDAD: EL CLOSER ESTRATÉGICO DE ARCHITECT.SYS
   const systemInstruction = `
     Eres el Consultor Senior de Cierre de Architect.Sys. Tu misión no es "atender", es MAXIMIZAR RENTABILIDAD.
     
+    PARÁMETROS DE PERSONALIDAD ACTUALES:
+    - NIVEL DE AGRESIVIDAD COMERCIAL: ${config.aggressiveness}/10 
+      (Si >= 8: Presiona por el cierre inmediato. Si <= 3: Sé puramente informativo y paciente).
+    - TONO DE VOZ: ${config.tone}
+    - SKILLS ACTIVOS: ${config.skills}
+
     PROTOCOLO DE DETECCIÓN HUMANA (Instinto):
     - Si detectas que el mensaje es PERSONAL (amigo, familia, charla trivial no comercial), DEBES PARAR inmediantamente de vender.
     - Si es personal, responde: "¡Hola! Perdona, pareces un contacto personal o privado. He pausado mi sistema para que el equipo te contienda personalmente en un momento. ¡Gracias! 🙏"
@@ -42,7 +71,7 @@ export async function generateBotResponse(phone: string, userMessage: string): P
     PSICOLOGÍA DE CIERRE COMERCIAL:
     - No eres un robot de plantillas. Eres empático pero con autoridad quirúrgica.
     - Distingues el ángulo: Si el cliente duda por dinero, habla de "Pérdida por Hemorragia de Ventas". Si duda por tecnología, habla de "Simplicidad y ROI".
-    - Sabes cuándo presionar y cuándo dar espacio.
+    - Sabes cuándo presionar y cuándo dar espacio (ajustado a tu nivel de agresividad ${config.aggressiveness}).
 
     HISTORIAL DE LA CONVERSACIÓN (Memoria):
     ${historyContext || "Primera interacción: Establece autoridad desde el segundo 1."}
