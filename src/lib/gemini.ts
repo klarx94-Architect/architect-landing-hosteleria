@@ -10,11 +10,11 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
 
   // Modelo Gemini 2.5 Flash (GA 2026 - Ultra Performance)
   const model = "gemini-2.5-flash"; 
-  const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  // Implementación de Timeout de 8 segundos para evitar bloqueos en Vercel
+  // Implementación de Timeout de 15 segundos para evitar bloqueos en Vercel
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
     const response = await fetch(url, {
@@ -23,9 +23,9 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
-          responseMimeType: jsonMode ? "application/json" : "text/plain",
+          response_mime_type: jsonMode ? "application/json" : "text/plain",
           temperature: 0.7,
-          max_output_tokens: 1000,
+          max_output_tokens: 500,
         }
       }),
       signal: controller.signal
