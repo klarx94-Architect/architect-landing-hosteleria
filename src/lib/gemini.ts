@@ -23,7 +23,7 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
-          response_mime_type: jsonMode ? "application/json" : "text/plain",
+          responseMimeType: jsonMode ? "application/json" : "text/plain",
           temperature: 0.7,
           max_output_tokens: 1000,
         }
