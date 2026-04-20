@@ -83,6 +83,16 @@ export async function POST(req: Request) {
       // 3. GENERAR RESPUESTA IA
       const { text: aiResponse, intent, sentiment, topic, closing_stage, strategic_note } = await generateBotResponse(phone, userMessage);
 
+      // 4. AUTO-PAUSA DE CRÉDITOS PARA CONTACTOS PERSONALES
+      if (topic === 'Personal') {
+        console.log(`[Webhook] Detección Humana: Contacto PERSONAL identificado (${phone}). Desactivando bot para ahorrar créditos.`);
+        await supabase.from('bot_settings').upsert({ 
+          phone, 
+          enabled: false,
+          updated_at: new Date().toISOString()
+        });
+      }
+
       // Registro en Supabase (Assistant)
       const { error: aiError } = await supabase.from('chats').insert([{ 
         phone, 
@@ -95,27 +105,30 @@ export async function POST(req: Request) {
         strategic_note: strategic_note
       }]);
 
-      if (aiError) throw new Error(`Error en Insert (Assistant): ${aiError.message}`);
+      if (aiError) console.error(`[Webhook] Error en Insert (Assistant):`, aiError.message);
 
       // Envío vía Meta API
-      await sendWhatsAppMessage(phoneNumberId, phone, aiResponse);
+      if (topic !== 'Personal' && intent !== 'rechazo') {
+        await sendWhatsAppMessage(phoneNumberId, phone, aiResponse);
+      } else {
+        console.log(`[Webhook] Respuesta omitida para contacto personal/rechazo.`);
+      }
 
-      return NextResponse.json({ status: 'ok', detail: 'Procesado con éxito' });
+      return NextResponse.json({ status: 'ok', detail: 'Procesado con éxito', topic });
 
     } catch (innerError: any) {
-      console.error('[Webhook Process Error]', innerError);
+      console.error('[Webhook Process Error - Resilient Redirect]', innerError);
+      // RETORNAMOS 200 PARA EVITAR QUE MAKE SE DETENGA
       return NextResponse.json({ 
-        error: 'Process Error', 
-        message: innerError.message,
-        details: innerError
-      }, { status: 500 });
+        status: 'error_controlled', 
+        message: innerError.message
+      }, { status: 200 });
     }
   } catch (error: any) {
-    console.error('[Webhook POST Error]', error);
+    console.error('[Webhook POST Error - Critical Resilience]', error);
     return NextResponse.json({ 
-      error: 'Internal Error', 
-      message: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
-    }, { status: 500 });
+      status: 'error_critical', 
+      message: error.message
+    }, { status: 200 });
   }
 }
