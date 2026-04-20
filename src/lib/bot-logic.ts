@@ -87,33 +87,38 @@ export async function generateBotResponse(phone: string, userMessage: string): P
     PRODUCTOS Y ANCLAJE DE PRECIO:
     - Carta QR (250€), Recepcionista IA (650€ Setup + 49€/mes), Ads (400€/mes).
 
-    ESTRUCTURA DE RESPUESTA (JSON):
+    ESTRUCTURA OBLIGATORIA DE RESPUESTA (JSON PURO):
     {
       "response": "Tu respuesta humana y estratégica aquí.",
       "intent": "venta" | "lead" | "rechazo",
       "sentiment": "positivo" | "negativo" | "neutro",
       "topic": "Precio" | "Reserva" | "ROI" | "Duda Técnica" | "Personal" | "Otro",
       "closing_stage": "atencion" | "interes" | "deseo" | "accion",
-      "strategic_note": "Explica brevemente tu táctica (ej: 'He detectado frialdad comercial, aplico prueba social')."
+      "strategic_note": "Explica brevemente tu táctica."
     }
   `;
 
-  const prompt = `${systemInstruction}\n\nNueva consulta del cliente (${phone}): "${userMessage}"\n\nRespuesta JSON:`;
+  const prompt = `${systemInstruction}\n\nNueva consulta del cliente (${phone}): "${userMessage}"`;
 
   try {
     const textRes = await generateGeminiContent(prompt, true);
     
     let parsed;
     try {
-      const cleanJson = textRes.replace(/```json|```/g, '').trim();
-      parsed = JSON.parse(cleanJson);
-    } catch {
+      // EXTRACTOR UNIVERSAL DE JSON (Regex Robusto)
+      const jsonMatch = textRes.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No JSON found in response");
+      
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+       console.error('[Bot Logic] Fallo en el parseo JSON. RAW:', textRes);
        return {
          text: "Entiendo perfectamente. Estamos analizando cómo optimizar tu rentabilidad ahora mismo. ¿Te gustaría agendar una breve llamada de 5 min para ver el ROI exacto? 🚀",
          intent: "lead",
          sentiment: "positivo",
          topic: "ROI",
-         closing_stage: "interes"
+         closing_stage: "interes",
+         raw_ai_text: textRes
        };
     }
     
