@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabase-client';
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     conversations: 0,
     closingRate: 0,
@@ -16,6 +18,16 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setLoading(false);
+        fetchStats();
+      }
+    };
+
     const fetchStats = async () => {
       if (!supabaseClient) return;
 
@@ -65,7 +77,7 @@ export default function AdminDashboard() {
       }
     };
 
-    fetchStats();
+    checkUser();
     
     const channel = supabaseClient?.channel('stats-sync-heavy')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, () => fetchStats())
@@ -74,7 +86,18 @@ export default function AdminDashboard() {
     return () => {
       if (channel) supabaseClient?.removeChannel(channel);
     };
-  }, []);
+  }, [router]);
+
+  const handleLogout = async () => {
+    await supabaseClient.auth.signOut();
+    router.push('/login');
+  };
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] text-zinc-400">
+      Autenticando Nodo...
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
@@ -101,8 +124,11 @@ export default function AdminDashboard() {
               Diagnostics
             </Link>
             <div className="h-4 w-px bg-zinc-200 mx-2"></div>
-            <button className="bg-zinc-900 text-white text-[10px] font-black uppercase px-4 py-2 rounded-lg hover:bg-zinc-800 transition-all">
-              Export Audit
+            <button 
+              onClick={handleLogout}
+              className="bg-zinc-900 text-white text-[10px] font-black uppercase px-4 py-2 rounded-lg hover:bg-zinc-800 transition-all"
+            >
+              Cerrar Sesión
             </button>
           </nav>
         </div>

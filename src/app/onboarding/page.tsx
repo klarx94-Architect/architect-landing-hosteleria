@@ -1,7 +1,31 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { supabaseClient } from '@/lib/supabase-client';
 
 export default function OnboardingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setLoading(false);
+      }
+    };
+    checkUser();
+  }, [router]);
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] text-zinc-400">
+      Autenticando Nodo...
+    </div>
+  );
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
       {/* BACKGROUND DECORATION (SPACE OPS STYLE) */}
