@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import LiveMonitor from '@/components/dashboard/LiveMonitor';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabaseClient } from '@/lib/supabase-client';
 
 export default function AdminDashboard() {
