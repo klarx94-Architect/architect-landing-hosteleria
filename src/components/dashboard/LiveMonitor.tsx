@@ -27,35 +27,62 @@ export default function LiveMonitor() {
     if (!error) {
       setChats(prev => prev.filter(c => c.phone !== phone));
       if (selectedChat === phone) setSelectedChat(null);
+    } else {
+      setErrorMsg(`Error al archivar: ${error.message}`);
     }
   };
 
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {
-      if (!supabaseClient) return;
-      const { data: chatData } = await supabaseClient
-        .from('chats')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-      
-      const { data: settingsData } = await supabaseClient.from('bot_settings').select('*');
+      try {
+        if (!supabaseClient) {
+          setErrorMsg("Error: Cliente de Supabase no inicializado.");
+          return;
+        }
 
-      if (mounted && chatData) {
-        setChats(chatData);
-        setBotSettings(settingsData?.reduce((acc: any, s: any) => ({ ...acc, [s.phone]: s.enabled }), {}) || {});
+        // Permitimos status 'active' O NULL (para chats antiguos)
+        const { data: chatData, error: chatError } = await supabaseClient
+          .from('chats')
+          .select('*')
+          .or('status.eq.active,status.is.null')
+          .order('created_at', { ascending: false });
+        
+        if (chatError) throw chatError;
+
+        const { data: settingsData, error: settingsError } = await supabaseClient.from('bot_settings').select('*');
+        if (settingsError) throw settingsError;
+
+        if (mounted && chatData) {
+          setChats(chatData);
+          setBotSettings(settingsData?.reduce((acc: any, s: any) => ({ ...acc, [s.phone]: s.enabled }), {}) || {});
+          setLoading(false);
+          setErrorMsg(null);
+        }
+      } catch (err: any) {
+        console.error('[LiveMonitor] Error crítico:', err);
+        setErrorMsg(`Fallo de Sincronización: ${err.message || 'Error desconocido'}`);
         setLoading(false);
       }
     };
+
     fetchData();
-    const channel = supabaseClient.channel('live-sync')
+    const channel = supabaseClient?.channel('live-monitor-sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, () => fetchData())
       .subscribe();
-    return () => { mounted = false; supabaseClient.removeChannel(channel); };
+
+    return () => { mounted = false; if (channel) supabaseClient.removeChannel(channel); };
   }, []);
 
-  if (loading) return <div className="p-12 text-center text-zinc-400 font-black uppercase text-[10px] animate-pulse select-none">Sincronizando Torre de Control...</div>;
+  if (errorMsg) return (
+    <div className="p-8 bg-red-50 border border-red-100 rounded-[2rem] text-center">
+      <p className="text-red-600 font-black uppercase text-xs mb-2">Protocolo de Error Activado</p>
+      <p className="text-red-400 text-sm italic">"{errorMsg}"</p>
+      <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-red-600 text-white rounded-xl text-[10px] font-bold uppercase shadow-lg shadow-red-600/20">Reintentar Conexión</button>
+    </div>
+  );
+
+  if (loading) return <div className="p-20 text-center text-zinc-400 font-extrabold uppercase text-[12px] animate-pulse tracking-[0.2em] bg-white border border-zinc-100 rounded-[3rem]">Sincronizando Torre de Control Master...</div>;
 
   const leadsObj = chats.reduce((acc: any, chat: any) => {
     if (!acc[chat.phone]) acc[chat.phone] = [];

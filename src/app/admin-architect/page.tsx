@@ -9,8 +9,10 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     conversations: 0,
     closingRate: 0,
-    sentiment: 'Neutro',
-    latency: '8ms'
+    rejectionRate: 0,
+    topTopic: 'Analizando...',
+    actionStage: 0,
+    sentiment: 'Neutro'
   });
 
   useEffect(() => {
@@ -19,15 +21,25 @@ export default function AdminDashboard() {
 
       const { data: chats } = await supabaseClient
         .from('chats')
-        .select('intent, sentiment')
-        .eq('status', 'active');
+        .select('intent, sentiment, topic, closing_stage, phone')
+        .or('status.eq.active,status.is.null');
 
       if (chats) {
         const total = chats.length;
         const sales = chats.filter(c => c.intent === 'venta').length;
+        const rejections = chats.filter(c => c.intent === 'rechazo').length;
         const positive = chats.filter(c => c.sentiment === 'positivo').length;
+        const actionLeads = chats.filter(c => c.closing_stage === 'accion').length;
+
+        // Calcular Top Topic
+        const topics = chats.map(c => c.topic).filter(Boolean);
+        const topTopic = topics.length > 0 
+          ? topics.sort((a,b) => topics.filter(v => v===a).length - topics.filter(v => v===b).length).pop()
+          : 'Ninguno';
         
         const rate = total > 0 ? Math.round((sales / total) * 100) : 0;
+        const rejectRate = total > 0 ? Math.round((rejections / total) * 100) : 0;
+        
         let avgSent = 'Neutro';
         if (positive > total / 2) avgSent = 'Positivo';
         else if (total > 0 && positive < total / 4) avgSent = 'Alerta';
@@ -35,15 +47,17 @@ export default function AdminDashboard() {
         setStats({
           conversations: total,
           closingRate: rate,
-          sentiment: avgSent,
-          latency: '12ms'
+          rejectionRate: rejectRate,
+          topTopic: topTopic || 'Chat',
+          actionStage: actionLeads,
+          sentiment: avgSent
         });
       }
     };
 
     fetchStats();
     
-    const channel = supabaseClient?.channel('stats-sync')
+    const channel = supabaseClient?.channel('stats-sync-heavy')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, () => fetchStats())
       .subscribe();
 
@@ -85,16 +99,22 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-[1600px] mx-auto p-6 space-y-8">
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* GRID DE KPIs DE ALTA DENSIDAD */}
+        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
-            { label: 'Conversaciones', value: stats.conversations, color: 'text-orange-600' },
-            { label: 'IA Sentiment', value: stats.sentiment, color: 'text-green-600' },
-            { label: 'Tasa de Cierre', value: `${stats.closingRate}%`, color: 'text-zinc-600' },
-            { label: 'Network Latency', value: stats.latency, color: 'text-amber-600' },
+            { label: 'Conversaciones', value: stats.conversations, color: 'text-orange-600', trend: 'Live' },
+            { label: 'IA Sentiment', value: stats.sentiment, color: 'text-green-600', trend: 'Análisis' },
+            { label: 'Tasa de Cierre', value: `${stats.closingRate}%`, color: 'text-zinc-600', trend: 'ROI' },
+            { label: 'Tasa de Rechazo', value: `${stats.rejectionRate}%`, color: 'text-red-500', trend: 'Filtro' },
+            { label: 'Hot Topic', value: stats.topTopic, color: 'text-blue-600', trend: 'Tendencia' },
+            { label: 'Conversiones', value: stats.actionStage, color: 'text-orange-600', trend: 'Acción' },
           ].map((m, i) => (
-            <div key={i} className="bg-white border border-zinc-100 p-4 rounded-2xl shadow-sm">
-              <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold mb-1">{m.label}</p>
-              <p className={`text-xl font-black ${m.color}`}>{m.value}</p>
+            <div key={i} className="bg-white border border-zinc-100 p-4 rounded-3xl shadow-sm transition-all hover:shadow-xl hover:shadow-zinc-200/50">
+              <div className="flex justify-between items-start mb-2">
+                <p className="text-[9px] uppercase tracking-widest text-zinc-300 font-black">{m.label}</p>
+                <span className="text-[8px] px-1.5 py-0.5 bg-zinc-50 text-zinc-400 rounded-md font-bold">{m.trend}</span>
+              </div>
+              <p className={`text-xl font-black tracking-tighter ${m.color}`}>{m.value}</p>
             </div>
           ))}
         </section>
