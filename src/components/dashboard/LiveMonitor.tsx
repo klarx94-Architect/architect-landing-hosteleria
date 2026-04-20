@@ -9,6 +9,7 @@ export default function LiveMonitor() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ show: boolean, phone: string | null } | null>(null);
 
   const toggleBot = async (phone: string, currentState: boolean) => {
     if (!supabaseClient) return;
@@ -27,8 +28,25 @@ export default function LiveMonitor() {
     if (!error) {
       setChats(prev => prev.filter(c => c.phone !== phone));
       if (selectedChat === phone) setSelectedChat(null);
+      setConfirmDelete(null);
     } else {
       setErrorMsg(`Error al archivar: ${error.message}`);
+    }
+  };
+
+  const deletePermanently = async (phone: string) => {
+    if (!supabaseClient) return;
+    const { error } = await supabaseClient
+      .from('chats')
+      .delete()
+      .eq('phone', phone);
+    
+    if (!error) {
+      setChats(prev => prev.filter(c => c.phone !== phone));
+      if (selectedChat === phone) setSelectedChat(null);
+      setConfirmDelete(null);
+    } else {
+      setErrorMsg(`Error al eliminar: ${error.message}`);
     }
   };
 
@@ -114,8 +132,16 @@ export default function LiveMonitor() {
 
           return (
             <div key={phone} className="group relative bg-white border border-zinc-100 p-4 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all cursor-pointer overflow-hidden border-b-4 border-b-zinc-200 hover:border-b-orange-500" onClick={() => setSelectedChat(phone)}>
-              {/* ACCIÓN: ARCHIVAR */}
-              <button onClick={(e) => { e.stopPropagation(); archiveChat(phone); }} className="absolute -top-1 -right-1 w-6 h-6 bg-zinc-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-orange-600 hover:text-white z-10 text-xs font-bold">×</button>
+              {/* ACCIÓN: ABRIR MODAL DE DECISIÓN */}
+              <button 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setConfirmDelete({ show: true, phone });
+                }} 
+                className="absolute -top-1 -right-1 w-6 h-6 bg-zinc-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-zinc-200 hover:text-orange-600 z-10 text-xs font-bold shadow-sm"
+              >
+                ×
+              </button>
               
               <div className="mb-2">
                 <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tighter truncate">{phone}</p>
@@ -129,6 +155,45 @@ export default function LiveMonitor() {
           );
         })}
       </div>
+
+      {/* MODAL DE CONFIRMACIÓN DE ELIMINACIÓN/ARCHIVADO */}
+      {confirmDelete?.show && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-zinc-900/80 backdrop-blur-sm" onClick={() => setConfirmDelete(null)}></div>
+          <div className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">⚠️</span>
+              </div>
+              <h3 className="text-xl font-black text-zinc-900 tracking-tight">Gestión de Conversación</h3>
+              <p className="text-zinc-500 text-xs mt-2 font-medium">¿Qué deseas hacer con el registro de <br/><span className="font-bold text-zinc-800">{confirmDelete.phone}</span>?</p>
+            </div>
+            
+            <div className="space-y-3">
+              <button 
+                onClick={() => archiveChat(confirmDelete.phone!)}
+                className="w-full bg-zinc-900 text-white font-black py-4 rounded-xl text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all"
+              >
+                Archivar (Seguro / Recuperable)
+              </button>
+              
+              <button 
+                onClick={() => deletePermanently(confirmDelete.phone!)}
+                className="w-full bg-transparent text-red-600 font-black py-4 rounded-xl text-[10px] uppercase tracking-widest border border-red-100 hover:bg-red-50 transition-all text-center"
+              >
+                Eliminar Permanentemente (100%)
+              </button>
+              
+              <button 
+                onClick={() => setConfirmDelete(null)}
+                className="w-full text-zinc-400 font-bold py-2 text-[10px] uppercase tracking-widest hover:text-zinc-600 transition-all"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL DE AUDITORÍA PROFUNDA */}
       {selectedChat && activeChatData && (
