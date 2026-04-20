@@ -7,7 +7,14 @@
 import { generateGeminiContent } from './gemini';
 import { supabase } from './supabase';
 
-export async function generateBotResponse(phone: string, userMessage: string): Promise<{ text: string, intent: string, sentiment: string }> {
+export async function generateBotResponse(phone: string, userMessage: string): Promise<{ 
+  text: string, 
+  intent: string, 
+  sentiment: string,
+  topic?: string,
+  closing_stage?: string,
+  strategic_note?: string
+}> {
   // 1. OBTENER HISTORIAL DE CONVERSACIÓN (MEMORIA PERSISTENTE)
   let historyContext = "";
   try {
