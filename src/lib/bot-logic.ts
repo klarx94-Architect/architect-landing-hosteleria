@@ -13,7 +13,8 @@ export async function generateBotResponse(phone: string, userMessage: string): P
   sentiment: string,
   topic?: string,
   closing_stage?: string,
-  strategic_note?: string
+  strategic_note?: string,
+  raw_ai_text?: string
 }> {
   // 1. OBTENER HISTORIAL DE CONVERSACIÓN (MEMORIA PERSISTENTE)
   let historyContext = "";
@@ -122,7 +123,8 @@ export async function generateBotResponse(phone: string, userMessage: string): P
       sentiment: parsed.sentiment || "neutro",
       topic: parsed.topic || "Otro",
       closing_stage: parsed.closing_stage || "atencion",
-      strategic_note: parsed.strategic_note || ""
+      strategic_note: parsed.strategic_note || "",
+      raw_ai_text: textRes // Añadimos esto para debug
     };
 
   } catch (error) {
