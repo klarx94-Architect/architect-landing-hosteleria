@@ -3,9 +3,14 @@ import { generateBotResponse } from '@/lib/bot-logic';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const testMessage = searchParams.get('message') || 'Hola, ¿qué servicios ofreces?';
+  const testPhone = searchParams.get('phone') || 'DIAGNOSTIC_TEST';
+
   const diagnostics: any = {
     timestamp: new Date().toISOString(),
+    audit_params: { phone: testPhone, message: testMessage },
     env: {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'PRESENT' : 'MISSING',
       SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY ? 'PRESENT' : 'MISSING',
@@ -16,9 +21,6 @@ export async function GET() {
   };
 
   try {
-    const testPhone = 'DIAGNOSTIC_TEST';
-    const testMessage = 'Hola, ¿qué servicios ofreces?';
-    
     const res = await generateBotResponse(testPhone, testMessage);
     
     diagnostics.full_logic_test = 'SUCCESS';
