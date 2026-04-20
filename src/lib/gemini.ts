@@ -25,7 +25,7 @@ export async function generateGeminiContent(prompt: string, jsonMode: boolean = 
         generationConfig: {
           response_mime_type: jsonMode ? "application/json" : "text/plain",
           temperature: 0.7,
-          max_output_tokens: 500,
+          max_output_tokens: 1500,
         }
       }),
       signal: controller.signal
