@@ -1,5 +1,11 @@
 import React from 'react';
 
+export const metadata = {
+  title: "Instrucciones de Eliminación de Datos | Architect.Sys",
+  description: "Protocolo oficial para la solicitud de borrado permanente de datos personales en el ecosistema Architect.Sys, conforme al RGPD y políticas de Meta.",
+  alternates: { canonical: 'https://hosteleria.architectsys.com/data-deletion' }
+};
+
 export default function DataDeletion() {
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans p-8 md:p-24 selection:bg-[#FF4500] selection:text-white">
@@ -23,7 +29,7 @@ export default function DataDeletion() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white p-8 rounded-3xl border border-zinc-100">
               <h3 className="font-bold text-zinc-900 mb-2">Vía WhatsApp</h3>
-              <p className="text-sm">Escriba <span className="font-bold text-[#FF4500]">"ELIMINAR MIS DATOS"</span> al número oficial del establecimiento. Nuestro Agente de IA procesará la solicitud e informará al administrador para el borrado permanente del historial en Supabase.</p>
+              <p className="text-sm">Escriba <span className="font-bold text-[#FF4500]">"ELIMINAR MIS DATOS"</span> al número oficial del establecimiento. Nuestro sistema de soporte automatizado procesará la solicitud e informará al administrador para el borrado permanente del historial en Supabase.</p>
             </div>
             <div className="bg-white p-8 rounded-3xl border border-zinc-100">
               <h3 className="font-bold text-zinc-900 mb-2">Vía Email</h3>

@@ -1,5 +1,11 @@
 import React from 'react';
 
+export const metadata = {
+  title: "Condiciones del Servicio | Architect.Sys",
+  description: "Términos y condiciones de uso de la plataforma de automatización y servicios digitales de Architect.Sys.",
+  alternates: { canonical: 'https://hosteleria.architectsys.com/terms' }
+};
+
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans p-8 md:p-24 selection:bg-[#FF4500] selection:text-white">

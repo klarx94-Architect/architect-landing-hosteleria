@@ -1,5 +1,11 @@
 import React from 'react';
 
+export const metadata = {
+  title: "Política de Privacidad | Architect.Sys",
+  description: "Detalles sobre el tratamiento de datos personales y compromiso de confidencialidad en el ecosistema Architect.Sys, cumpliendo con el RGPD.",
+  alternates: { canonical: 'https://hosteleria.architectsys.com/privacy' }
+};
+
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans p-8 md:p-24 selection:bg-[#FF4500] selection:text-white">
