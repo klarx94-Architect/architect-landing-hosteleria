@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: "Architect.Sys | Multiplica tus reservas en piloto automático",
     description: "Sistemas digitales de autor para hostelería inteligente. Deja de perder dinero en comisiones.",
-    url: "https://architect-landing-hosteleria.vercel.app/",
+    url: "https://hosteleria.architectsys.com/",
     images: [{ url: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1200", width: 1200, height: 630, alt: "Architect.Sys Hostelería" }],
     siteName: "Architect.Sys",
     type: "website",

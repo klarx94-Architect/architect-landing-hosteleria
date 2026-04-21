@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Script from 'next/script';
 import AuthLayer from '@/components/dashboard/AuthLayer';
 import { supabaseClient } from '@/lib/supabase-client';
 
 export default function OnboardingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sdkLoaded, setSdkLoaded] = useState(false);
   const [config, setConfig] = useState({
     aggressiveness: 5,
     tone: 'Profesional',
@@ -60,8 +62,44 @@ export default function OnboardingPage() {
     }
   };
 
+  const handleMetaConnect = () => {
+    if (!(window as any).FB) {
+      alert('El SDK de Meta no se ha cargado correctamente.');
+      return;
+    }
+
+    (window as any).FB.login((response: any) => {
+      if (response.authResponse) {
+        console.log('[Meta Connect] Handshake inicial exitoso:', response.authResponse);
+        // Aquí se procesaría el code para el intercambio de tokens permanentes
+        alert('Conexión con Meta establecida. Sincronizando entorno híbrido...');
+      } else {
+        console.warn('[Meta Connect] El usuario canceló o hubo un error.');
+      }
+    }, {
+      config_id: '1540833913480000', // Placeholder para el WhatsApp Configuration ID
+      response_type: 'code',
+      override_default_response_type: true,
+      extras: {
+        featureType: 'whatsapp_business_app_onboarding' // LA CLAVE DE LA COEXISTENCIA
+      }
+    });
+  };
+
   return (
     <AuthLayer>
+      <Script 
+        src="https://connect.facebook.net/es_ES/sdk.js" 
+        onLoad={() => {
+          (window as any).FB.init({
+            appId      : '2758101607887987',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v20.0'
+          });
+          setSdkLoaded(true);
+        }}
+      />
       <div className="min-h-screen bg-[#FDFCF8] text-zinc-900 font-sans selection:bg-orange-500/30">
         {/* BACKGROUND DECORATION (SPACE OPS STYLE) */}
         <div className="fixed inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(#FF4500 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}></div>
@@ -117,6 +155,24 @@ export default function OnboardingPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-zinc-100">
+                  <button
+                    onClick={handleMetaConnect}
+                    disabled={!sdkLoaded}
+                    className="w-full bg-zinc-900 text-white p-5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                  >
+                    {sdkLoaded ? (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-[#1877F2] animate-pulse"></span>
+                        Establecer Conexión Híbrida Meta
+                      </>
+                    ) : 'Iniciando Protocolos Meta...'}
+                  </button>
+                  <p className="text-[9px] text-zinc-400 mt-4 text-center px-4 leading-relaxed font-bold uppercase tracking-tighter">
+                    Este proceso activa la Cloud API manteniendo el control total en tu WhatsApp de siempre (Coexistencia Híbrida).
+                  </p>
                 </div>
               </div>
 
