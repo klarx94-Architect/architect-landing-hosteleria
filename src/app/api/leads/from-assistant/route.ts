@@ -51,25 +51,24 @@ export async function POST(req: Request) {
     const kommoBase = process.env.KOMMO_BASE_URL || '';
     const kommoToken = process.env.KOMMO_ACCESS_TOKEN || '';
 
-    const kommoUrl = `${kommoBase.replace(/\/$/, '')}/api/v4/leads/complex`;
+    const kommoUrl = `${kommoBase.replace(/\/$/, '')}/api/v4/leads`;
 
     // Kommo pipeline: 13589223 ("Pipeline")
-    // Initial stage: 104858823 ("Leads Entrantes")
-    const kommoBody = {
-      // Minimal payload: name and a note that includes phone/email/message.
-      name,
-      // Using real pipeline and initial status IDs (do not change unless confirmed)
-      pipeline_id: 13589223,
-      status_id: 104858823,
-      // Kommo supports adding notes; adapt when official schema is available.
-      notes: [
-        {
-          note_type: 'common',
-          text: `Phone: ${phone || ''}\nEmail: ${email || ''}\nMessage: ${message || ''}`,
-        },
-      ],
-      // If Kommo supports contacts in /leads/complex, adapt here to create a contact with phone/email.
-    } as unknown;
+    // Initial API status: 104896687 ("Contactos privados")
+    const kommoBody = [
+      {
+        name,
+        pipeline_id: 13589223,
+        status_id: 104896687,
+        // Mantener nota si el endpoint lo acepta; si no, se quitará tras probar.
+        notes: [
+          {
+            note_type: 'common',
+            text: `Phone: ${phone || ''}\nEmail: ${email || ''}\nMessage: ${message || ''}`,
+          },
+        ],
+      },
+    ] as unknown;
 
     let kommoResponseOk = true;
     try {
