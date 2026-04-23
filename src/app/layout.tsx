@@ -1,5 +1,6 @@
 import React from "react";
 import "./globals.css";
+import AnalyticsPixel from "@/components/AnalyticsPixel";
 
 export const metadata = {
   title: "Architect.Sys | Sistemas de Alta Facturación para Hostelería",
@@ -7,7 +8,7 @@ export const metadata = {
   openGraph: {
     title: "Architect.Sys | Multiplica tus reservas en piloto automático",
     description: "Sistemas digitales de autor para hostelería inteligente. Deja de perder dinero en comisiones.",
-    url: "https://hosteleria.architectsys.com/",
+    url: "https://architect-landing-hosteleria.vercel.app/",
     images: [{ url: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1200", width: 1200, height: 630, alt: "Architect.Sys Hostelería" }],
     siteName: "Architect.Sys",
     type: "website",
@@ -23,7 +24,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className="bg-background text-foreground antialiased">{children}</body>
+      <body className="bg-background text-foreground antialiased">
+        <AnalyticsPixel />
+        {children}
+      </body>
     </html>
   );
 }
