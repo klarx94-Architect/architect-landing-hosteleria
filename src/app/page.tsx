@@ -1,6 +1,7 @@
 import React from 'react';
 import ExitIntent from '@/components/ExitIntent';
 import DarkKitchen from '@/components/DarkKitchen';
+import DemoLauncher from '@/components/DemoLauncher';
 
 export default function Home() {
   return (
@@ -40,9 +41,7 @@ export default function Home() {
               El teléfono suena, tú estás sirviendo platos y pierdes 150€ en reservas. Instalamos un recepcionista virtual en tu WhatsApp que atiende y cierra mesas mientras tú trabajas.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <a href="https://wa.me/34611499674?text=Hola,%20quiero%20ver%20cómo%20funciona." className="inline-flex items-center justify-center gap-3 bg-[#FF4500] text-white px-6 md:px-10 py-4 md:py-5 rounded-full text-lg md:text-xl font-bold shadow-[0_0_40px_rgba(255,69,0,0.4)] hover:-translate-y-2 hover:shadow-[0_0_60px_rgba(255,69,0,0.8)] transition-all duration-300 whitespace-nowrap w-full sm:w-auto text-center">
-                Ver demostración en vivo
-              </a>
+              <DemoLauncher />
             </div>
           </div>
           <div className="hidden lg:flex justify-end relative">
