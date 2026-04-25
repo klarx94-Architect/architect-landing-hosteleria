@@ -15,8 +15,8 @@ export default function Home() {
           <div className="text-2xl font-black tracking-tighter text-white hover:scale-105 transition-transform">
             Architect<span className="text-[#FF4500]">.Sys</span>
           </div>
-          <a href="https://wa.me/34611499674?text=Hola,%20quiero%20solicitar%20la%20Auditoría%20Gratuita." className="hidden md:inline-flex bg-[#FF4500] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-500/50 hover:-translate-y-1">
-            Auditoría Gratuita
+          <a href="https://wa.me/34611499674?text=Hola,%20quiero%20solicitar%20la%20Auditoría%20Gratuita." className="hidden md:inline-flex bg-[#FF4500] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-500/50 hover:-translate-y-1 items-center gap-2">
+            <span>Auditoría Gratuita</span>
           </a>
         </div>
       </nav>

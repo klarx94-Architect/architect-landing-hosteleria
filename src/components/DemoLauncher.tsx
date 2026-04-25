@@ -20,9 +20,12 @@ export default function DemoLauncher() {
       <button
         onClick={() => setOpen(true)}
         title="Probar demo con IA"
-        className="fixed right-6 bottom-6 z-50 bg-white/90 dark:bg-black/80 border border-gray-200 dark:border-gray-700 shadow-xl rounded-full p-3 flex items-center gap-3 hover:scale-105 transition-transform"
+        className="fixed right-4 bottom-4 z-50 flex items-center gap-2 rounded-full bg-white shadow-lg px-4 py-2 text-sm font-medium text-gray-900 border border-gray-200 hover:bg-gray-50 md:px-5 md:py-3"
       >
-        <svg className="w-6 h-6 text-[#FF4500]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#FF4500] text-white text-xs">
+          💬
+        </span>
+        <span className="block">Demo IA</span>
       </button>
 
       {open && <ChatDemoWidget onClose={() => setOpen(false)} />}

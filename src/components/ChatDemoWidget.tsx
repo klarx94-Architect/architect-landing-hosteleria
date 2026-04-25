@@ -206,63 +206,115 @@ export default function ChatDemoWidget({ onClose }: { onClose: () => void }) {
     setStep('choose');
   };
 
+  const handleSelectUseCase = (useCase: string) => {
+    setChoice(useCase);
+    setStep('responses');
+    const responses: Record<string, string> = {
+      reservas: '👋 Hola, soy el agente de Architect.Sys. En menos de 2 minutos te enseño cómo automatizar reservas y pedidos de tu restaurante.',
+      pedidos: '👋 Hola, soy el agente de Architect.Sys. En menos de 2 minutos te enseño cómo automatizar pedidos a domicilio.',
+      carta: '👋 Aquí puedes ver la carta interactiva — selecciona categorías y te muestro precios y tiempos de preparación.',
+      otro: '👋 Entendido. Podemos armar una demo personalizada para tu caso de uso específico.',
+    };
+    push({ from: 'bot', text: responses[useCase]! });
+    sendAnalytic('demo_choice', { choice: useCase });
+    setTimeout(() => setStep('mini'), 600);
+  };
+
   return (
     <div className="fixed inset-0 z-60 flex items-end justify-end p-6 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+      <div className="pointer-events-auto w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col h-full">
         <div className="flex items-center justify-between p-4 border-b">
           <div className="font-bold">Demo IA — Architect.Sys</div>
           <div className="flex items-center gap-2">
             <button onClick={() => { sendAnalytic('demo_closed'); onClose(); }} className="text-sm text-gray-500">Cerrar</button>
           </div>
         </div>
-        <div ref={scrollRef as any} className="p-4 h-80 overflow-y-auto space-y-3 bg-gray-50">
+
+        {/* Welcome state with visible content */}
+        {step === 'welcome' && (
+          <div className="flex-1 flex flex-col px-4 py-3 overflow-y-auto space-y-3">
+            <header className="px-1 pb-2 border-b border-black/5">
+              <p className="font-semibold text-gray-900 text-sm">
+                Demo en vivo Architect.Sys
+              </p>
+              <p className="text-xs text-gray-500 pt-1">
+                Prueba en 2 minutos cómo tu agente de IA atiende reservas y pedidos.
+              </p>
+            </header>
+
+            <main className="flex-1 space-y-3">
+              <div className="rounded-lg bg-orange-50 px-3 py-2 text-xs text-gray-800">
+                👋 Hola, soy el asistente de Architect.Sys. En menos de 2 minutos te enseño cómo automatizar reservas y pedidos.
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-gray-600 mb-2">
+                  ¿Qué quieres ver en la demo?
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleSelectUseCase('reservas')}
+                    className="rounded-full bg-white px-3 py-1 text-xs border border-gray-200 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
+                  >
+                    Reservas automáticas
+                  </button>
+                  <button
+                    onClick={() => handleSelectUseCase('pedidos')}
+                    className="rounded-full bg-white px-3 py-1 text-xs border border-gray-200 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
+                  >
+                    Pedidos para llevar
+                  </button>
+                  <button
+                    onClick={() => handleSelectUseCase('carta')}
+                    className="rounded-full bg-white px-3 py-1 text-xs border border-gray-200 hover:border-[#FF4500] hover:text-[#FF4500] transition-colors"
+                  >
+                    Carta interactiva
+                  </button>
+                </div>
+              </div>
+            </main>
+
+            <footer className="px-1 pt-2 border-t border-black/5">
+              <button
+                className="w-full rounded-lg bg-[#ff5400] text-white text-sm font-semibold py-2"
+                onClick={() => handleSelectUseCase('reservas')}
+              >
+                Comenzar demo
+              </button>
+            </footer>
+          </div>
+        )}
+
+        {/* Chat states */}
+        <div ref={scrollRef as any} className="flex-1 p-4 h-80 overflow-y-auto space-y-3 bg-gray-50">
           {messages.map((m, i) => (
-            <div key={i} className={`p-2 rounded-lg ${m.from==='bot' ? 'bg-white self-start' : 'bg-[#DCF8C6] self-end'}`}> {m.text} </div>
+            <div key={i} className={`p-2 rounded-lg ${m.from === 'bot' ? 'bg-white self-start' : 'bg-[#DCF8C6] self-end'}`}>
+              {m.text}
+            </div>
           ))}
 
-          {step === 'choose' && (
-            <div className="flex flex-col gap-2 mt-2">
-              {options.map(o => (
-                <button key={o.key} onClick={() => handleChoice(o.key)} className="text-left bg-white py-2 px-3 rounded-lg border">{o.label}</button>
+          {(step === 'choose' || step.startsWith('ask_') || step === 'ask_demo') && (
+            <div className="space-y-2">
+              {step === 'choose' && options.map(o => (
+                <button key={o.key} onClick={() => handleChoice(o.key)} className="text-left bg-white py-2 px-3 rounded-lg border text-sm">{o.label}</button>
               ))}
             </div>
           )}
-
         </div>
 
         <div className="p-3 border-t bg-white">
           {(step.startsWith('ask_') || step === 'ask_name' || step === 'ask_phone' || step === 'ask_email') && (
             <div className="flex gap-2">
-              <input value={input} onChange={e=>setInput(e.target.value)} className="flex-1 border rounded-lg px-3 py-2" placeholder="Escribe tu respuesta..." />
-              <button onClick={handleSubmitInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading? '...' : 'Enviar'}</button>
-            </div>
-          )}
-
-          {step === 'welcome' && (
-            <div className="flex gap-2">
-              <button onClick={startDemoFlow} className="flex-1 bg-[#FF4500] text-white px-4 py-2 rounded-lg">Comenzar demo</button>
-              <button onClick={() => { push({ from: 'user', text: 'No gracias' }); onClose(); }} className="px-4 py-2 rounded-lg border">Cerrar</button>
-            </div>
-          )}
-
-          {step === 'mini' && (
-            <div className="flex gap-2">
-              <button onClick={askNext} className="flex-1 bg-[#FF4500] text-white px-4 py-2 rounded-lg">Comenzar mini-simulación</button>
-              <button onClick={() => { push({ from: 'user', text: 'Saltar' }); setStep('ask_demo'); }} className="px-4 py-2 rounded-lg border">Saltar</button>
-            </div>
-          )}
-
-          {step === 'ask_demo' && (
-            <div className="flex gap-2">
-              <button onClick={() => { setStep('ask_name'); push({ from: 'bot', text: 'Perfecto. ¿Cuál es tu nombre?' }); }} className="flex-1 bg-[#10B981] text-white px-4 py-2 rounded-lg">Sí, quiero demo</button>
-              <button onClick={() => { push({ from: 'user', text: 'No gracias' }); onClose(); }} className="px-4 py-2 rounded-lg border">No</button>
+              <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 border rounded-lg px-3 py-2" placeholder="Escribe tu respuesta..." />
+              <button onClick={handleSubmitInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? '...' : 'Enviar'}</button>
             </div>
           )}
 
           {step === 'done' && (
-            <div className="text-sm text-gray-500">Gracias. Puedes cerrar esta ventana.</div>
+            <div className="text-sm text-gray-500 text-center py-2">
+              Gracias. Puedes cerrar esta ventana.
+            </div>
           )}
-
         </div>
       </div>
     </div>
