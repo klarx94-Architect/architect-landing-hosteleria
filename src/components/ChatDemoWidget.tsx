@@ -182,7 +182,12 @@ export default function ChatDemoWidget({ onClose }: { onClose: () => void }) {
 
           <div ref={scrollRef as any} className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50 min-h-[120px]">
             {messages.map((m, i) => (
-              <div key={i} className={`p-2 rounded-lg ${m.from === 'bot' ? 'bg-white self-start' : 'bg-[#DCF8C6] self-end'}`}>{m.text}</div>
+              <div
+                key={i}
+                className={`p-2 rounded-lg text-sm ${m.from === 'bot' ? 'bg-slate-50 text-slate-800 self-start' : 'bg-[#DCF8C6] text-slate-800 self-end'}`}
+              >
+                {m.text}
+              </div>
             ))}
 
             {(step === 'choose' || step.startsWith('ask_') || step === 'ask_demo') && (

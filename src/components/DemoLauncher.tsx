@@ -25,7 +25,7 @@ export default function DemoLauncher() {
         <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#FF4500] text-white text-xs">
           💬
         </span>
-        <span className="block">Demo IA</span>
+        <span className="block">Probar demo en vivo</span>
       </button>
 
       {open && <ChatDemoWidget onClose={() => setOpen(false)} />}
