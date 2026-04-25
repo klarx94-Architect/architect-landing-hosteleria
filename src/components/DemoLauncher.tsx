@@ -20,7 +20,7 @@ export default function DemoLauncher() {
       <button
         onClick={() => setOpen(true)}
         title="Probar demo con IA"
-        className="fixed right-4 bottom-4 z-50 flex items-center gap-2 rounded-full bg-white shadow-lg px-4 py-2 text-sm font-medium text-gray-900 border border-gray-200 hover:bg-gray-50 md:px-5 md:py-3"
+        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-white shadow-lg px-4 py-2 text-sm font-medium text-gray-900 border border-gray-200 hover:bg-gray-50 md:px-5 md:py-3"
       >
         <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#FF4500] text-white text-xs">
           💬
