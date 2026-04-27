@@ -28,10 +28,22 @@ export default function ChatDemoWidget({ onClose }: Props) {
   const welcomeText = "Hola — soy Arqui, asistente de Architect.Sys. En 2 minutos te muestro cómo automatizar reservas y pedidos para tu negocio de hostelería.";
 
   useEffect(() => {
-    setMessages([{ role: "assistant", content: welcomeText }]);
+    // Inicializar con dos mensajes del assistant: saludo + pregunta inicial
+    setMessages([
+      { role: "assistant", content: welcomeText },
+      { role: "assistant", content: "Para empezar, cuéntame: ¿cómo te llamas y qué tipo de negocio tienes (restaurante, bar, delivery, hotel, dark_kitchen u otro)?" },
+    ]);
   }, []);
 
   const pushMessage = (m: { role: "user" | "assistant"; content: string }) => setMessages((p) => [...p, m]);
+
+  // ref para scroll inteligente
+  const messagesRef = React.useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const callApi = async (payload: any) => {
     try {
@@ -107,11 +119,13 @@ export default function ChatDemoWidget({ onClose }: Props) {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {messages.map((m, i) => (
-              <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-slate-800 self-end"}`}>
-                {m.content}
-              </div>
-            ))}
+            <div ref={messagesRef} className="space-y-3 max-h-[56vh] overflow-y-auto">
+              {messages.map((m, i) => (
+                <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
+                  {m.content}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="px-4 pb-4 pt-2 border-t bg-white">
@@ -128,7 +142,7 @@ export default function ChatDemoWidget({ onClose }: Props) {
                 )}
 
                 <div className="flex gap-2">
-                  <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2" placeholder="Escribe aquí..." />
+                  <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400" placeholder="Escribe aquí..." />
                   <button onClick={sendUserInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
                 </div>
               </div>
@@ -143,7 +157,7 @@ export default function ChatDemoWidget({ onClose }: Props) {
                 </div>
 
                 <div className="flex gap-2 mt-2">
-                  <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2" placeholder="Escribe aquí..." />
+                  <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400" placeholder="Escribe aquí..." />
                   <button onClick={sendUserInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
                 </div>
               </div>
