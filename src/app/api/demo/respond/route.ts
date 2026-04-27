@@ -20,14 +20,26 @@ export async function POST(req: Request) {
 
     // Build conversation history for the prompt
     const historyText = Array.isArray(messages) ? messages.map((m: any) => `${m.role === 'user' ? 'Usuario' : 'Asistente'}: ${m.content}`).join('\n') : '';
-    const leadText = leadContext ? `LeadContext: ${JSON.stringify(leadContext)}` : '';
+    // Build a human-readable lead summary (no JSON) to provide context to the model
+    let leadText = '';
+    if (leadContext && typeof leadContext === 'object') {
+      const parts: string[] = [];
+      if (leadContext.leadName) parts.push(`Nombre del contacto: ${leadContext.leadName}`);
+      if (leadContext.businessName) parts.push(`Nombre del negocio: ${leadContext.businessName}`);
+      if (leadContext.businessType) parts.push(`Tipo de negocio: ${leadContext.businessType}`);
+      if (leadContext.location) parts.push(`Ubicación: ${leadContext.location}`);
+      if (leadContext.serviceModel) parts.push(`Modelo de servicio: ${leadContext.serviceModel}`);
+      if (leadContext.capacity) parts.push(`Capacidad aproximada: ${leadContext.capacity}`);
+      if (leadContext.channels && Array.isArray(leadContext.channels)) parts.push(`Canales: ${leadContext.channels.join(', ')}`);
+      if (parts.length > 0) leadText = `Información del lead:\n- ${parts.join('\n- ')}`;
+    }
 
     // Ask the model to respond in plain text. Also ask (optionally) to append a JSON object with detected leadContext when available.
-    const prompt = `${systemInstruction}\n\n${leadText}\n\nConversación previa:\n${historyText}\n\nResponde como asistente. Si puedes extraer datos estructurados sobre el lead (leadName, businessName, businessType, location, serviceModel, capacity, channels), al final incluye un JSON válido con clave \"leadContext\" con los campos encontrados. Ejemplo al final de la respuesta:\n\n{ "leadContext": { ... } }\n\nDe lo contrario, devuelve solo texto natural. Sé breve y directo.`;
+    const prompt = `${systemInstruction}\n\n${leadText}\n\nConversación previa:\n${historyText}\n\nResponde como asistente. No incluyas objetos JSON ni llaves ({, }) en la respuesta visible al usuario. Si puedes extraer datos estructurados sobre el lead, devuelve SOLO el texto natural para el usuario y, de forma separada (solo para el API), puedes incluir un objeto JSON con la clave \"leadContext\". En la respuesta visible al usuario, cuando hagas varias preguntas en modo CONSULTING, preséntalas como lista numerada (1., 2., ...), una pregunta por línea. Mantén respuestas de 1–3 párrafos cortos, separa bloques con saltos de línea.`;
 
-    const text = await generateGeminiContent(prompt, false);
+    let text = await generateGeminiContent(prompt, false);
 
-    // Try to extract JSON leadContext from the model output
+    // Try to extract JSON leadContext from the model output (but remove JSON from visible text)
     let parsedLeadContext: any = undefined;
     try {
       const jsonStart = text.indexOf('{');
@@ -48,9 +60,11 @@ export async function POST(req: Request) {
           const maybe = JSON.parse(jsonStr);
           if (maybe && typeof maybe === 'object' && maybe.leadContext) {
             parsedLeadContext = maybe.leadContext;
+            // remove the JSON block from the visible text
+            text = text.slice(0, jsonStart).trim();
           } else if (maybe && typeof maybe === 'object' && (maybe.leadName || maybe.businessName || maybe.businessType)) {
-            // model might return directly the object
             parsedLeadContext = maybe;
+            text = text.slice(0, jsonStart).trim();
           }
         }
       }

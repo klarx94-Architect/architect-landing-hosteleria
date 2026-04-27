@@ -151,10 +151,10 @@ export default function ChatDemoWidget({ onClose }: Props) {
                   </div>
                 )}
 
-                <div className="flex gap-2">
+                <form onSubmit={(e) => { e.preventDefault(); sendUserInput(); }} className="flex gap-2">
                   <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400" placeholder="Escribe aquí..." />
-                  <button onClick={sendUserInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
-                </div>
+                  <button type="submit" className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
+                </form>
               </div>
             )}
 
@@ -166,10 +166,10 @@ export default function ChatDemoWidget({ onClose }: Props) {
                   <button onClick={() => triggerClosing('Reserva confirmada, gracias')} className="flex-1 rounded-full border px-3 py-2 text-sm">Reserva confirmada, gracias</button>
                 </div>
 
-                <div className="flex gap-2 mt-2">
+                <form onSubmit={(e) => { e.preventDefault(); sendUserInput(); }} className="flex gap-2 mt-2">
                   <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400" placeholder="Escribe aquí..." />
-                  <button onClick={sendUserInput} className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
-                </div>
+                  <button type="submit" className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
+                </form>
               </div>
             )}
 
