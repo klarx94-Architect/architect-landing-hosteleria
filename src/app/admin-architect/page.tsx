@@ -1,81 +1,36 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import LiveMonitor from '@/components/dashboard/LiveMonitor';
 import Link from 'next/link';
-import { supabaseClient } from '@/lib/supabase-client';
 import AuthLayer from '@/components/dashboard/AuthLayer';
+import RangeSelector from '@/components/admin/RangeSelector';
+import { getWebAnalytics, getLeadAnalytics, parseDate } from '@/lib/analytics';
 
-export default function AdminDashboard() {
-  const [stats, setStats] = useState({
-    conversations: 0,
+export default async function AdminDashboard({ searchParams }: { searchParams?: { range?: string } }) {
+  const range = (searchParams?.range as string) || '7';
+  const days = Number(range || 7);
+  const to = new Date();
+  const from = new Date(to.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
+
+  const fromIso = parseDate(new Date(from.setHours(0,0,0,0)));
+  const toIso = parseDate(new Date(to.setHours(23,59,59,999)));
+
+  const web = await getWebAnalytics(fromIso, toIso);
+  const leads = await getLeadAnalytics(fromIso, toIso);
+
+  // KPIs
+  const sessions = web.sessions || 0;
+  const totalLeads = leads.total || 0;
+  const conversion = sessions > 0 ? Math.round((totalLeads / sessions) * 100) : 0;
+  const topSource = Object.entries(leads.bySource || {}).sort((a,b) => (b[1] as number) - (a[1] as number))[0]?.[0] || Object.keys(web.utms || {})[0] || 'N/A';
+
+  const stats = {
+    conversations: sessions,
+    sentiment: 'Neutro',
     closingRate: 0,
     rejectionRate: 0,
-    topTopic: 'Analizando...',
-    actionStage: 0,
-    sentiment: 'Neutro'
-  });
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (!supabaseClient) return;
-
-      // Intento 1: Con filtro de status
-      let { data: chats, error } = await supabaseClient
-        .from('chats')
-        .select('intent, sentiment, topic, closing_stage, phone')
-        .or('status.eq.active,status.is.null');
-
-      // Si la columna no existe, fallback a todos los registros
-      if (error && error.code === '42703') {
-        const fallback = await supabaseClient
-          .from('chats')
-          .select('intent, sentiment, topic, closing_stage, phone');
-        chats = fallback.data;
-        error = fallback.error;
-      }
-
-      if (chats) {
-        const total = chats.length;
-        const sales = chats.filter(c => c.intent === 'venta').length;
-        const rejections = chats.filter(c => c.intent === 'rechazo').length;
-        const positive = chats.filter(c => c.sentiment === 'positivo').length;
-        const actionLeads = chats.filter(c => c.closing_stage === 'accion').length;
-
-        // Calcular Top Topic
-        const topics = chats.map(c => c.topic).filter(Boolean);
-        const topTopic = topics.length > 0 
-          ? topics.sort((a,b) => topics.filter(v => v===a).length - topics.filter(v => v===b).length).pop()
-          : 'Ninguno';
-        
-        const rate = total > 0 ? Math.round((sales / total) * 100) : 0;
-        const rejectRate = total > 0 ? Math.round((rejections / total) * 100) : 0;
-        
-        let avgSent = 'Neutro';
-        if (positive > total / 2) avgSent = 'Positivo';
-        else if (total > 0 && positive < total / 4) avgSent = 'Alerta';
-
-        setStats({
-          conversations: total,
-          closingRate: rate,
-          rejectionRate: rejectRate,
-          topTopic: topTopic || 'Chat',
-          actionStage: actionLeads,
-          sentiment: avgSent
-        });
-      }
-    };
-
-    fetchStats();
-    
-    const channel = supabaseClient?.channel('stats-sync-heavy')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'chats' }, () => fetchStats())
-      .subscribe();
-
-    return () => {
-      if (channel) supabaseClient?.removeChannel(channel);
-    };
-  }, []);
+    topTopic: topSource,
+    actionStage: totalLeads,
+  };
 
   return (
     <AuthLayer>
@@ -130,19 +85,55 @@ export default function AdminDashboard() {
               </div>
             ))}
           </section>
-
+          
           <section>
             <div className="mb-6 flex justify-between items-end">
               <div>
                 <h2 className="text-2xl font-black tracking-tighter text-zinc-900">Live Conversation Stream</h2>
                 <p className="text-zinc-400 text-sm">Auditoría en tiempo real y control de respuesta manual.</p>
               </div>
+              <div className="text-sm text-zinc-500">Rango: {range === '1' ? 'Hoy' : range === '7' ? 'Últimos 7 días' : 'Últimos 30 días'}</div>
             </div>
-            
+
             <div className="bg-white border border-zinc-100 p-1 rounded-[2.5rem] shadow-xl shadow-zinc-200/20">
               <LiveMonitor />
             </div>
           </section>
+
+          <section>
+            <div className="mt-6 bg-white border border-zinc-100 p-6 rounded-2xl">
+              <h3 className="text-lg font-bold mb-4">Leads ({totalLeads})</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="text-left text-zinc-500">
+                    <tr>
+                      <th className="p-2">Fecha</th>
+                      <th className="p-2">Nombre</th>
+                      <th className="p-2">Teléfono</th>
+                      <th className="p-2">Email</th>
+                      <th className="p-2">Canal</th>
+                      <th className="p-2">utm_source</th>
+                      <th className="p-2">utm_campaign</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(leads.leads || []).map((l: any) => (
+                      <tr key={l.id} className="odd:bg-zinc-50">
+                        <td className="p-2">{new Date(l.created_at).toLocaleString()}</td>
+                        <td className="p-2">{l.name}</td>
+                        <td className="p-2">{l.phone}</td>
+                        <td className="p-2">{l.email}</td>
+                        <td className="p-2">{l.source}</td>
+                        <td className="p-2">{l.utm_source}</td>
+                        <td className="p-2">{l.utm_campaign}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
         </main>
       </div>
     </AuthLayer>
