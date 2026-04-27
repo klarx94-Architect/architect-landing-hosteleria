@@ -105,6 +105,51 @@ export async function POST(req: Request) {
     }
 
     const response: any = { status: 'ok', text };
+    // If the model did not return structured leadContext, try a lightweight
+    // heuristic extraction from the conversation messages (common comma-separated form).
+    if (!parsedLeadContext) {
+      try {
+        const userMsgs = Array.isArray(messages) ? messages.filter((m: any) => (m.role === 'user' || m.role === 'Usuario')) : [];
+        const lastUser = userMsgs.length ? (userMsgs[userMsgs.length - 1].content || '') : '';
+        const firstUser = userMsgs.length ? (userMsgs[0].content || '') : '';
+
+        if (lastUser && lastUser.includes(',')) {
+          const parts = lastUser.split(',').map((p: string) => p.trim()).filter(Boolean);
+          const candidate: any = {};
+          if (parts[0]) candidate.businessName = parts[0];
+          if (parts[1]) candidate.location = parts[1];
+          if (parts[2]) {
+            const sm = parts[2].toLowerCase();
+            if (sm.includes('reserva')) candidate.serviceModel = 'solo_reservas';
+            else if (sm.includes('delivery') || sm.includes('pedido')) candidate.serviceModel = 'solo_delivery';
+            else candidate.serviceModel = parts[2];
+          }
+          if (parts[3]) {
+            const capMatch = parts[3].match(/(\d+)/);
+            candidate.capacity = capMatch ? capMatch[1] : parts[3];
+          }
+          if (parts[4]) {
+            const ch = parts[4].toLowerCase();
+            const channels: string[] = [];
+            if (ch.includes('whatsapp')) channels.push('whatsapp');
+            if (ch.includes('web')) channels.push('web');
+            if (ch.includes('red') || ch.includes('social') || ch.includes('instagram') || ch.includes('facebook')) channels.push('social');
+            if (channels.length) candidate.channels = channels;
+          }
+
+          // Try to infer leadName from the very first user message if present
+          if (!candidate.leadName && firstUser && firstUser.includes(',')) {
+            const maybeName = firstUser.split(',')[0].trim();
+            if (maybeName && maybeName.length < 40) candidate.leadName = maybeName;
+          }
+
+          if (Object.keys(candidate).length) parsedLeadContext = candidate;
+        }
+      } catch (e) {
+        // ignore heuristic errors
+      }
+    }
+
     if (parsedLeadContext) response.leadContext = parsedLeadContext;
 
     return NextResponse.json(response);
