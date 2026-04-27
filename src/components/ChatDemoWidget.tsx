@@ -75,7 +75,14 @@ export default function ChatDemoWidget({ onClose }: Props) {
     await callApi(payload);
   };
 
-  const hasMinimumLead = () => !!(leadContext.businessName || leadContext.leadName) && !!leadContext.businessType;
+  const hasMinimumLead = () => {
+    const hasLead = !!leadContext.leadName;
+    const hasBusiness = !!leadContext.businessName;
+    const hasType = !!leadContext.businessType;
+    const hasLocation = !!leadContext.location;
+    const hasChannelOrCapacity = (leadContext.channels && leadContext.channels.length > 0) || !!leadContext.capacity;
+    return hasLead && hasBusiness && hasType && hasLocation && hasChannelOrCapacity;
+  };
 
   const demoLabelForType = (bt?: BusinessType) => {
     if (!bt) return "Ver demo en vivo";
@@ -109,16 +116,19 @@ export default function ChatDemoWidget({ onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/40">
-      <div className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white shadow-2xl overflow-hidden">
-        <div className="max-h-[80vh] flex flex-col">
+      <div className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-lg overflow-hidden">
+        <div className="max-h-[80vh] h-auto flex flex-col">
           <div className="flex items-center justify-between p-4 border-b">
-            <div className="font-bold">Demo IA — Architect.Sys</div>
+            <div className="flex flex-col">
+              <div className="text-sm font-semibold text-gray-900">Asistente Arqui · Demo en vivo</div>
+              <div className="text-xs text-gray-500">Architect.Sys</div>
+            </div>
             <div>
               <button onClick={resetAndClose} className="text-sm text-gray-500">Cerrar</button>
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 p-4">
             <div ref={messagesRef} className="space-y-3 max-h-[56vh] overflow-y-auto">
               {messages.map((m, i) => (
                 <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
