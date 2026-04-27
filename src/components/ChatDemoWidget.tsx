@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 type Props = { onClose?: () => void };
 
@@ -17,6 +17,10 @@ type LeadContext = {
   channels?: string[];
   notes?: string;
 };
+
+// Z-index compartido para overlays globales: evita que se pise el modal de Arqui.
+// Cualquier contenedor con posición relativa + z-index bajo (u overflow hidden) no debe interferir.
+const Z_INDEX_OVERLAY = 9999;
 
 export default function ChatDemoWidget({ onClose }: Props) {
   const [mode, setMode] = useState<ChatMode>("CONSULTING");
@@ -118,8 +122,20 @@ export default function ChatDemoWidget({ onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center sm:items-end bg-black/40 pointer-events-auto">
-      <div className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-2xl overflow-hidden relative z-[10000]">
+    <>
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: Z_INDEX_OVERLAY }}
+        aria-hidden="true"
+      />
+      <div
+        className="fixed inset-0 flex items-center justify-center sm:items-end bg-black/40 pointer-events-auto"
+        style={{ zIndex: Z_INDEX_OVERLAY }}
+      >
+        <div
+          className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-2xl overflow-hidden relative"
+          style={{ zIndex: Z_INDEX_OVERLAY + 1 }}
+        >
         <div className="max-h-[80vh] h-auto flex flex-col">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex flex-col">
@@ -184,5 +200,6 @@ export default function ChatDemoWidget({ onClose }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }
