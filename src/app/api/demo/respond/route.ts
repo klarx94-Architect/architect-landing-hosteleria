@@ -39,35 +39,60 @@ export async function POST(req: Request) {
 
     let text = await generateGeminiContent(prompt, false);
 
-    // Try to extract JSON leadContext from the model output (but remove JSON from visible text)
+    // Try to extract JSON leadContext from the model output (but remove JSON/fence markers from visible text)
     let parsedLeadContext: any = undefined;
     try {
-      const jsonStart = text.indexOf('{');
-      if (jsonStart !== -1) {
-        const possible = text.slice(jsonStart);
-        // Try to find the last closing brace that balances
-        let depth = 0;
-        let endIdx = -1;
-        for (let i = 0; i < possible.length; i++) {
-          if (possible[i] === '{') depth++;
-          else if (possible[i] === '}') {
-            depth--;
-            if (depth === 0) { endIdx = i; break; }
+      // 1) Prefer fenced code blocks: ```json ... ``` or ``` ... ```
+      const fenceRegex = /```(?:json)?\s*([\s\S]*?)\s*```/i;
+      const fenceMatch = text.match(fenceRegex);
+      if (fenceMatch && fenceMatch[1]) {
+        const candidate = fenceMatch[1].trim();
+        try {
+          const maybe = JSON.parse(candidate);
+          if (maybe && typeof maybe === 'object') {
+            parsedLeadContext = maybe.leadContext ? maybe.leadContext : maybe;
+            // remove the entire fenced block (including backticks)
+            text = text.replace(fenceMatch[0], '').trim();
           }
+        } catch (e) {
+          // not valid JSON inside the fence — fallthrough to other heuristics
         }
-        if (endIdx !== -1) {
-          const jsonStr = possible.slice(0, endIdx + 1);
-          const maybe = JSON.parse(jsonStr);
-          if (maybe && typeof maybe === 'object' && maybe.leadContext) {
-            parsedLeadContext = maybe.leadContext;
-            // remove the JSON block from the visible text
-            text = text.slice(0, jsonStart).trim();
-          } else if (maybe && typeof maybe === 'object' && (maybe.leadName || maybe.businessName || maybe.businessType)) {
-            parsedLeadContext = maybe;
-            text = text.slice(0, jsonStart).trim();
+      }
+
+      // 2) Fallback: try to find a JSON object by matching braces and parse it.
+      if (!parsedLeadContext) {
+        const jsonStart = text.indexOf('{');
+        if (jsonStart !== -1) {
+          const possible = text.slice(jsonStart);
+          let depth = 0;
+          let endIdx = -1;
+          for (let i = 0; i < possible.length; i++) {
+            if (possible[i] === '{') depth++;
+            else if (possible[i] === '}') {
+              depth--;
+              if (depth === 0) { endIdx = i; break; }
+            }
+          }
+          if (endIdx !== -1) {
+            const jsonStr = possible.slice(0, endIdx + 1);
+            try {
+              const maybe = JSON.parse(jsonStr);
+              if (maybe && typeof maybe === 'object') {
+                parsedLeadContext = maybe.leadContext ? maybe.leadContext : maybe;
+                // remove the JSON block and also strip any leftover opening fence markers before jsonStart
+                let before = text.slice(0, jsonStart);
+                before = before.replace(/```(?:json)?\s*$/i, '');
+                text = before.trim();
+              }
+            } catch (e) {
+              // ignore parse errors
+            }
           }
         }
       }
+
+      // 3) Clean any stray code fence markers that may remain
+      text = text.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
     } catch (err) {
       // ignore parse errors
       parsedLeadContext = undefined;

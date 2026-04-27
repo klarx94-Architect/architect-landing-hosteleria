@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 
 type Props = { onClose?: () => void };
 
@@ -48,6 +49,12 @@ export default function ChatDemoWidget({ onClose }: Props) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Ensure portal only renders on client
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const callApi = async (payload: any) => {
     try {
@@ -121,7 +128,7 @@ export default function ChatDemoWidget({ onClose }: Props) {
     setInputValue("");
   };
 
-  return (
+  const overlay = (
     <>
       <div
         className="fixed inset-0 pointer-events-none"
@@ -179,7 +186,7 @@ export default function ChatDemoWidget({ onClose }: Props) {
 
             {mode === "BOOKING_DEMO" && (
               <div className="space-y-2">
-                <p className="text-xs text-gray-600">Acciones rápidas</p>
+                <p className="text-xs text-gray-600 mb-2">Acciones rápidas</p>
                 <div className="flex gap-2">
                   <button onClick={() => triggerClosing('Gracias, nos vemos esta noche')} className="flex-1 rounded-full border px-3 py-2 text-sm">Gracias, nos vemos esta noche</button>
                   <button onClick={() => triggerClosing('Reserva confirmada, gracias')} className="flex-1 rounded-full border px-3 py-2 text-sm">Reserva confirmada, gracias</button>
@@ -202,4 +209,6 @@ export default function ChatDemoWidget({ onClose }: Props) {
     </div>
     </>
   );
+
+  return mounted ? createPortal(overlay, document.body) : null;
 }
