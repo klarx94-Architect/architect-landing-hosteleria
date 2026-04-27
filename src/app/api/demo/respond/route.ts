@@ -39,41 +39,117 @@ export async function POST(req: Request) {
 
     let text = await generateGeminiContent(prompt, false);
 
-    // Try to extract JSON leadContext from the model output (but remove JSON from visible text)
+    // Try to extract JSON leadContext from the model output (but remove JSON/fence markers from visible text)
     let parsedLeadContext: any = undefined;
     try {
-      const jsonStart = text.indexOf('{');
-      if (jsonStart !== -1) {
-        const possible = text.slice(jsonStart);
-        // Try to find the last closing brace that balances
-        let depth = 0;
-        let endIdx = -1;
-        for (let i = 0; i < possible.length; i++) {
-          if (possible[i] === '{') depth++;
-          else if (possible[i] === '}') {
-            depth--;
-            if (depth === 0) { endIdx = i; break; }
+      // 1) Prefer fenced code blocks: ```json ... ``` or ``` ... ```
+      const fenceRegex = /```(?:json)?\s*([\s\S]*?)\s*```/i;
+      const fenceMatch = text.match(fenceRegex);
+      if (fenceMatch && fenceMatch[1]) {
+        const candidate = fenceMatch[1].trim();
+        try {
+          const maybe = JSON.parse(candidate);
+          if (maybe && typeof maybe === 'object') {
+            parsedLeadContext = maybe.leadContext ? maybe.leadContext : maybe;
+            // remove the entire fenced block (including backticks)
+            text = text.replace(fenceMatch[0], '').trim();
           }
+        } catch (e) {
+          // not valid JSON inside the fence — fallthrough to other heuristics
         }
-        if (endIdx !== -1) {
-          const jsonStr = possible.slice(0, endIdx + 1);
-          const maybe = JSON.parse(jsonStr);
-          if (maybe && typeof maybe === 'object' && maybe.leadContext) {
-            parsedLeadContext = maybe.leadContext;
-            // remove the JSON block from the visible text
-            text = text.slice(0, jsonStart).trim();
-          } else if (maybe && typeof maybe === 'object' && (maybe.leadName || maybe.businessName || maybe.businessType)) {
-            parsedLeadContext = maybe;
-            text = text.slice(0, jsonStart).trim();
+      }
+
+      // 2) Fallback: try to find a JSON object by matching braces and parse it.
+      if (!parsedLeadContext) {
+        const jsonStart = text.indexOf('{');
+        if (jsonStart !== -1) {
+          const possible = text.slice(jsonStart);
+          let depth = 0;
+          let endIdx = -1;
+          for (let i = 0; i < possible.length; i++) {
+            if (possible[i] === '{') depth++;
+            else if (possible[i] === '}') {
+              depth--;
+              if (depth === 0) { endIdx = i; break; }
+            }
+          }
+          if (endIdx !== -1) {
+            const jsonStr = possible.slice(0, endIdx + 1);
+            try {
+              const maybe = JSON.parse(jsonStr);
+              if (maybe && typeof maybe === 'object') {
+                parsedLeadContext = maybe.leadContext ? maybe.leadContext : maybe;
+                // remove the JSON block and also strip any leftover opening fence markers before jsonStart
+                let before = text.slice(0, jsonStart);
+                before = before.replace(/```(?:json)?\s*$/i, '');
+                text = before.trim();
+              }
+            } catch (e) {
+              // ignore parse errors
+            }
           }
         }
       }
+
+      // 3) Clean any stray code fence markers that may remain
+      text = text.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+
+      // 4) Remove leftover markers like '--- leadContext:' or trailing 'leadContext:' left by the model
+      // Only strip when they appear at the end of the visible text.
+      text = text.replace(/(?:-{2,}\s*)?leadContext\s*:\s*$/i, '');
+      text = text.replace(/-{3,}\s*$/i, '');
+      text = text.trim();
     } catch (err) {
       // ignore parse errors
       parsedLeadContext = undefined;
     }
 
     const response: any = { status: 'ok', text };
+    // If the model did not return structured leadContext, try a lightweight
+    // heuristic extraction from the conversation messages (common comma-separated form).
+    if (!parsedLeadContext) {
+      try {
+        const userMsgs = Array.isArray(messages) ? messages.filter((m: any) => (m.role === 'user' || m.role === 'Usuario')) : [];
+        const lastUser = userMsgs.length ? (userMsgs[userMsgs.length - 1].content || '') : '';
+        const firstUser = userMsgs.length ? (userMsgs[0].content || '') : '';
+
+        if (lastUser && lastUser.includes(',')) {
+          const parts = lastUser.split(',').map((p: string) => p.trim()).filter(Boolean);
+          const candidate: any = {};
+          if (parts[0]) candidate.businessName = parts[0];
+          if (parts[1]) candidate.location = parts[1];
+          if (parts[2]) {
+            const sm = parts[2].toLowerCase();
+            if (sm.includes('reserva')) candidate.serviceModel = 'solo_reservas';
+            else if (sm.includes('delivery') || sm.includes('pedido')) candidate.serviceModel = 'solo_delivery';
+            else candidate.serviceModel = parts[2];
+          }
+          if (parts[3]) {
+            const capMatch = parts[3].match(/(\d+)/);
+            candidate.capacity = capMatch ? capMatch[1] : parts[3];
+          }
+          if (parts[4]) {
+            const ch = parts[4].toLowerCase();
+            const channels: string[] = [];
+            if (ch.includes('whatsapp')) channels.push('whatsapp');
+            if (ch.includes('web')) channels.push('web');
+            if (ch.includes('red') || ch.includes('social') || ch.includes('instagram') || ch.includes('facebook')) channels.push('social');
+            if (channels.length) candidate.channels = channels;
+          }
+
+          // Try to infer leadName from the very first user message if present
+          if (!candidate.leadName && firstUser && firstUser.includes(',')) {
+            const maybeName = firstUser.split(',')[0].trim();
+            if (maybeName && maybeName.length < 40) candidate.leadName = maybeName;
+          }
+
+          if (Object.keys(candidate).length) parsedLeadContext = candidate;
+        }
+      } catch (e) {
+        // ignore heuristic errors
+      }
+    }
+
     if (parsedLeadContext) response.leadContext = parsedLeadContext;
 
     return NextResponse.json(response);

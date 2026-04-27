@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 
 type Props = { onClose?: () => void };
 
@@ -20,7 +21,7 @@ type LeadContext = {
 
 // Z-index compartido para overlays globales: evita que se pise el modal de Arqui.
 // Cualquier contenedor con posición relativa + z-index bajo (u overflow hidden) no debe interferir.
-const Z_INDEX_OVERLAY = 9999;
+const Z_INDEX_OVERLAY = 99999;
 
 export default function ChatDemoWidget({ onClose }: Props) {
   const [mode, setMode] = useState<ChatMode>("CONSULTING");
@@ -28,6 +29,9 @@ export default function ChatDemoWidget({ onClose }: Props) {
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [leadContext, setLeadContext] = useState<LeadContext>({});
+  const [demoRunning, setDemoRunning] = useState(false);
+  const [demoCompleted, setDemoCompleted] = useState(false);
+  const [showOfferCTA, setShowOfferCTA] = useState(false);
 
   const welcomeText = "Hola — soy Arqui, asistente de Architect.Sys. En 2 minutos te muestro cómo automatizar reservas y pedidos para tu negocio de hostelería.";
 
@@ -48,6 +52,12 @@ export default function ChatDemoWidget({ onClose }: Props) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Ensure portal only renders on client
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const callApi = async (payload: any) => {
     try {
@@ -119,9 +129,68 @@ export default function ChatDemoWidget({ onClose }: Props) {
     ]);
     setLeadContext({});
     setInputValue("");
+    setDemoRunning(false);
+    setDemoCompleted(false);
+    setShowOfferCTA(false);
   };
 
-  return (
+  const formatTomorrow = () => {
+    const d = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
+  };
+
+  const startLiveDemo = () => {
+    if (demoRunning) return;
+    setDemoRunning(true);
+    setMode('BOOKING_DEMO');
+    setShowOfferCTA(false);
+
+    const business = leadContext.businessName || 'su negocio';
+    const city = leadContext.location || '';
+    const model = leadContext.serviceModel || leadContext.businessType || '';
+    const capacity = leadContext.capacity || 'N/A';
+
+    pushMessage({ role: 'assistant', content: `Iniciando demo en vivo con ${business}${city ? ' en ' + city : ''}.` });
+
+    setTimeout(() => {
+      pushMessage({ role: 'assistant', content: `Simulando interacción: verificando disponibilidad y perfil del negocio...` });
+    }, 600);
+
+    setTimeout(() => {
+      const date = formatTomorrow();
+      const time = '20:00';
+      pushMessage({ role: 'assistant', content: `He encontrado disponibilidad provisional. Procedo a simular una reserva para ${capacity} comensales en ${business} el ${date} a las ${time}.` });
+    }, 1400);
+
+    setTimeout(() => {
+      pushMessage({ role: 'assistant', content: `Reserva simulada: ${business}${city ? ' — ' + city : ''} | Modelo: ${model || 'no especificado'} | Capacidad: ${capacity}.\nReserva confirmada para ${formatTomorrow()} a las 20:00.` });
+    }, 2100);
+
+    setTimeout(() => {
+      pushMessage({ role: 'assistant', content: `Demostración completada. ¿Desea finalizar la simulación y ver el resumen con la propuesta comercial?` });
+      setDemoCompleted(true);
+    }, 2600);
+  };
+
+  const finalizeDemo = (choice: string) => {
+    // user chooses final canned response
+    pushMessage({ role: 'user', content: choice });
+    setDemoRunning(false);
+    setDemoCompleted(false);
+    setMode('CONSULTING');
+
+    // summary + offer
+    const business = leadContext.businessName || 'su negocio';
+    const summary = `Resumen: la demo simuló el flujo de reservas para ${business}, mostrando confirmación automática y manejo de disponibilidad.`;
+    const offer = `Propuesta especial: Implementación completa por 650€ + 129€/mes. Incluye 2 meses de gestión de anuncios (gastos publicitarios no incluidos).`;
+
+    pushMessage({ role: 'assistant', content: `${summary}\n\n${offer}` });
+    setShowOfferCTA(true);
+  };
+
+  const overlay = (
     <>
       <div
         className="fixed inset-0 pointer-events-none"
@@ -129,14 +198,14 @@ export default function ChatDemoWidget({ onClose }: Props) {
         aria-hidden="true"
       />
       <div
-        className="fixed inset-0 flex items-center justify-center sm:items-end bg-black/40 pointer-events-auto"
+        className="fixed inset-0 flex items-center justify-center bg-black/40 pointer-events-auto"
         style={{ zIndex: Z_INDEX_OVERLAY }}
       >
         <div
           className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-2xl overflow-hidden relative"
           style={{ zIndex: Z_INDEX_OVERLAY + 1 }}
         >
-        <div className="max-h-[80vh] h-auto flex flex-col">
+        <div className="max-h-[90vh] h-[90vh] flex flex-col">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex flex-col">
               <div className="text-sm font-semibold text-gray-900">Asistente Arqui · Demo en vivo</div>
@@ -147,14 +216,12 @@ export default function ChatDemoWidget({ onClose }: Props) {
             </div>
           </div>
 
-          <div className="flex-1 p-4">
-            <div ref={messagesRef} className="space-y-3 max-h-[56vh] overflow-y-auto">
-              {messages.map((m, i) => (
-                <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
-                  {m.content}
-                </div>
-              ))}
-            </div>
+          <div ref={messagesRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 break-words">
+            {messages.map((m, i) => (
+              <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
+                <div className="whitespace-pre-wrap break-words">{m.content}</div>
+              </div>
+            ))}
           </div>
 
           <div className="px-4 pb-4 pt-2 border-t bg-white">
@@ -166,7 +233,7 @@ export default function ChatDemoWidget({ onClose }: Props) {
 
                 {hasMinimumLead() && (
                   <div className="mb-2">
-                    <button onClick={() => startBookingDemo()} className="w-full rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white">{demoLabelForType(leadContext.businessType)}</button>
+                    <button onClick={() => startLiveDemo()} className="w-full rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white">{demoLabelForType(leadContext.businessType)}</button>
                   </div>
                 )}
 
@@ -179,11 +246,17 @@ export default function ChatDemoWidget({ onClose }: Props) {
 
             {mode === "BOOKING_DEMO" && (
               <div className="space-y-2">
-                <p className="text-xs text-gray-600">Acciones rápidas</p>
+                <p className="text-xs text-gray-600 mb-2">Acciones rápidas</p>
                 <div className="flex gap-2">
                   <button onClick={() => triggerClosing('Gracias, nos vemos esta noche')} className="flex-1 rounded-full border px-3 py-2 text-sm">Gracias, nos vemos esta noche</button>
                   <button onClick={() => triggerClosing('Reserva confirmada, gracias')} className="flex-1 rounded-full border px-3 py-2 text-sm">Reserva confirmada, gracias</button>
                 </div>
+
+                {demoCompleted && (
+                  <div className="mt-3">
+                    <button onClick={() => finalizeDemo('Finalizar demo y ver propuesta')} className="w-full rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white">Finalizar demo y ver propuesta</button>
+                  </div>
+                )}
 
               </div>
             )}
@@ -196,10 +269,19 @@ export default function ChatDemoWidget({ onClose }: Props) {
                 </div>
               </div>
             )}
+
+            {showOfferCTA && (
+              <div className="mt-3 space-y-2">
+                <a href="https://calendly.com/placeholder" target="_blank" rel="noreferrer" className="w-full inline-block text-center rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white">Agendar llamada</a>
+                <a href="https://wa.me/1234567890?text=Hola%2C%20quiero%20hablar%20de%20la%20propuesta" target="_blank" rel="noreferrer" className="w-full inline-block text-center rounded-full border px-4 py-3 text-sm font-semibold text-gray-900">Contactar por WhatsApp</a>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
     </>
   );
+
+  return mounted ? createPortal(overlay, document.body) : null;
 }
