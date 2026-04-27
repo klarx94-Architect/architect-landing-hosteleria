@@ -21,7 +21,7 @@ type LeadContext = {
 
 // Z-index compartido para overlays globales: evita que se pise el modal de Arqui.
 // Cualquier contenedor con posición relativa + z-index bajo (u overflow hidden) no debe interferir.
-const Z_INDEX_OVERLAY = 9999;
+const Z_INDEX_OVERLAY = 99999;
 
 export default function ChatDemoWidget({ onClose }: Props) {
   const [mode, setMode] = useState<ChatMode>("CONSULTING");
