@@ -109,14 +109,17 @@ export default function ChatDemoWidget({ onClose }: Props) {
   const resetAndClose = () => {
     if (onClose) onClose();
     setMode("CONSULTING");
-    setMessages([{ role: "assistant", content: welcomeText }]);
+    setMessages([
+      { role: "assistant", content: welcomeText },
+      { role: "assistant", content: "Para empezar, cuéntame: ¿cómo te llamas y qué tipo de negocio tienes (restaurante, bar, delivery, hotel, dark_kitchen u otro)?" },
+    ]);
     setLeadContext({});
     setInputValue("");
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/40">
-      <div className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-lg overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center sm:items-end bg-black/40 pointer-events-auto">
+      <div className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-2xl overflow-hidden relative z-[10000]">
         <div className="max-h-[80vh] h-auto flex flex-col">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex flex-col">
@@ -166,10 +169,6 @@ export default function ChatDemoWidget({ onClose }: Props) {
                   <button onClick={() => triggerClosing('Reserva confirmada, gracias')} className="flex-1 rounded-full border px-3 py-2 text-sm">Reserva confirmada, gracias</button>
                 </div>
 
-                <form onSubmit={(e) => { e.preventDefault(); sendUserInput(); }} className="flex gap-2 mt-2">
-                  <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-gray-900 placeholder-gray-400" placeholder="Escribe aquí..." />
-                  <button type="submit" className="bg-[#FF4500] text-white px-4 py-2 rounded-lg">{loading ? "..." : "Enviar"}</button>
-                </form>
               </div>
             )}
 
