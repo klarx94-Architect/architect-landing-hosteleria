@@ -93,6 +93,12 @@ export async function POST(req: Request) {
 
       // 3) Clean any stray code fence markers that may remain
       text = text.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+
+      // 4) Remove leftover markers like '--- leadContext:' or trailing 'leadContext:' left by the model
+      // Only strip when they appear at the end of the visible text.
+      text = text.replace(/(?:-{2,}\s*)?leadContext\s*:\s*$/i, '');
+      text = text.replace(/-{3,}\s*$/i, '');
+      text = text.trim();
     } catch (err) {
       // ignore parse errors
       parsedLeadContext = undefined;

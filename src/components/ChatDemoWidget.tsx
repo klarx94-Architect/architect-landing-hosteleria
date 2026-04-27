@@ -136,14 +136,14 @@ export default function ChatDemoWidget({ onClose }: Props) {
         aria-hidden="true"
       />
       <div
-        className="fixed inset-0 flex items-center justify-center sm:items-end bg-black/40 pointer-events-auto"
+        className="fixed inset-0 flex items-center justify-center bg-black/40 pointer-events-auto"
         style={{ zIndex: Z_INDEX_OVERLAY }}
       >
         <div
           className="w-full max-w-[420px] sm:max-w-[480px] mx-4 sm:mx-0 rounded-3xl bg-white border border-gray-100 shadow-2xl overflow-hidden relative"
           style={{ zIndex: Z_INDEX_OVERLAY + 1 }}
         >
-        <div className="max-h-[80vh] h-auto flex flex-col">
+        <div className="max-h-[90vh] h-[90vh] flex flex-col">
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex flex-col">
               <div className="text-sm font-semibold text-gray-900">Asistente Arqui · Demo en vivo</div>
@@ -154,14 +154,12 @@ export default function ChatDemoWidget({ onClose }: Props) {
             </div>
           </div>
 
-          <div className="flex-1 p-4">
-            <div ref={messagesRef} className="space-y-3 max-h-[56vh] overflow-y-auto">
-              {messages.map((m, i) => (
-                <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
-                  {m.content}
-                </div>
-              ))}
-            </div>
+          <div ref={messagesRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 break-words">
+            {messages.map((m, i) => (
+              <div key={i} className={`p-2 rounded-lg text-sm ${m.role === "assistant" ? "bg-slate-50 text-slate-800 self-start" : "bg-[#DCF8C6] text-gray-900 self-end"}`}>
+                <div className="whitespace-pre-wrap break-words">{m.content}</div>
+              </div>
+            ))}
           </div>
 
           <div className="px-4 pb-4 pt-2 border-t bg-white">
