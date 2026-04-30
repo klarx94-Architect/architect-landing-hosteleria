@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrato de Servicios Digitales — Architect.Sys</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --dark:    #111111;
+    --mid:     #444444;
+    --light:   #888888;
+    --rule:    #E0E0E0;
+    --bg:      #FAFAFA;
+    --white:   #FFFFFF;
+    --gold:    #B8862A;
+    --accent:  #1A1A1A;
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); font-size: 11px; line-height: 1.6; }
+  .page { width: 210mm; min-height: 297mm; background: var(--white); margin: 0 auto 24px; padding: 0; box-shadow: 0 2px 24px rgba(0,0,0,0.08); display: flex; flex-direction: column; position: relative; page-break-after: always; }
+  .doc-header { padding: 36px 48px 28px; border-bottom: 2px solid var(--dark); display: flex; justify-content: space-between; align-items: flex-end; }
+  .brand-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--dark); letter-spacing: 1px; }
+  .brand-name span { color: var(--gold); }
+  .brand-sub { font-size: 8px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--light); margin-top: 3px; }
+  .doc-meta { text-align: right; }
+  .doc-type { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  .doc-number { font-size: 18px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; }
+  .doc-date { font-size: 9px; color: var(--light); margin-top: 2px; }
+  .parties { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-bottom: 1px solid var(--rule); }
+  .party { padding: 22px 48px; }
+  .party:first-child { border-right: 1px solid var(--rule); }
+  .party-role { font-size: 7.5px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .party-name { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+  .party-detail { font-size: 9.5px; color: var(--mid); line-height: 1.7; }
+  .field.empty { color: var(--light); font-style: italic; }
+  .section { padding: 0 48px; margin-top: 22px; }
+  .section-title { font-size: 8px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+  .service-table { width: 100%; border-collapse: collapse; }
+  .service-table thead tr { border-bottom: 1px solid var(--dark); }
+  .service-table th { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--light); padding: 6px 10px; text-align: left; }
+  .service-table th:last-child { text-align: right; }
+  .service-table td { font-size: 10px; padding: 9px 10px; color: var(--mid); border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .service-table td:last-child { text-align: right; color: var(--dark); font-weight: 600; }
+  .service-table td strong { color: var(--dark); font-weight: 600; display: block; margin-bottom: 2px; }
+  .service-table td small { font-size: 8.5px; color: var(--light); }
+  .service-table .total-row td { border-top: 2px solid var(--dark); border-bottom: none; padding-top: 12px; font-weight: 700; color: var(--dark); font-size: 12px; }
+  .service-table .total-row td:first-child { color: var(--light); font-size: 9px; font-weight: 400; }
+  .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .payment-box { border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
+  .payment-box-label { font-size: 7.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .payment-box-amount { font-size: 20px; font-weight: 800; color: var(--dark); letter-spacing: -1px; }
+  .payment-box-amount sup { font-size: 11px; font-weight: 600; vertical-align: super; }
+  .payment-box-note { font-size: 8.5px; color: var(--light); margin-top: 3px; }
+  .delivery-row { display: flex; gap: 12px; margin-top: 4px; }
+  .delivery-item { flex: 1; border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px; }
+  .delivery-icon { font-size: 18px; flex-shrink: 0; }
+  .delivery-label { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--light); margin-bottom: 2px; }
+  .delivery-value { font-size: 11px; font-weight: 700; color: var(--dark); }
+  .delivery-note { font-size: 8.5px; color: var(--light); margin-top: 2px; }
+  .clause { margin-bottom: 16px; }
+  .clause-num { font-size: 7.5px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  .clause-title { font-size: 10.5px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .clause-body { font-size: 9.5px; color: var(--mid); line-height: 1.7; }
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 4px; }
+  .sig-label { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--light); margin-bottom: 40px; }
+  .sig-line { border-top: 1px solid var(--dark); padding-top: 6px; }
+  .sig-name { font-size: 10px; font-weight: 600; color: var(--dark); }
+  .sig-role { font-size: 8.5px; color: var(--light); margin-top: 1px; }
+  .doc-footer { margin-top: auto; padding: 14px 48px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; }
+  .doc-footer-left { font-size: 8px; color: var(--light); }
+  .doc-footer-right { font-size: 8px; color: var(--gold); font-weight: 600; letter-spacing: 1px; }
+  .validity-banner { background: var(--dark); color: #fff; padding: 14px 48px; display: flex; justify-content: space-between; align-items: center; }
+  .validity-banner span:first-child { font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+  .validity-banner span:last-child { font-size: 9px; color: rgba(255,255,255,0.5); }
+  @media print { body { background: white; } .page { box-shadow: none; margin: 0; } .no-print { display: none !important; } }
+  .toolbar { position: fixed; bottom: 0; left: 0; right: 0; background: #111; padding: 12px 24px; display: flex; justify-content: center; gap: 12px; z-index: 100; }
+  .btn { background: var(--gold); color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+  .btn:hover { opacity: 0.9; }
+  .btn-sec { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="page">
+  <div class="doc-header">
+    <div class="brand-mark">
+      <div class="brand-name">ARCHITECT<span>.SYS</span></div>
+      <div class="brand-sub">Digital Solutions &middot; hosteleria.architectsys.com</div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-type">Contrato + Factura de Servicios</div>
+      <div class="doc-number">REF: AS-<span style="color:var(--gold)">[ N&Uacute;MERO ]</span></div>
+      <div class="doc-date">Fecha de emisi&oacute;n: ____________________</div>
+    </div>
+  </div>
+
+  <div class="parties">
+    <div class="party">
+      <div class="party-role">Prestador del Servicio</div>
+      <div class="party-name">Architect.Sys</div>
+      <div class="party-detail">
+        Servicio digital independiente<br>
+        Web: hosteleria.architectsys.com<br>
+        Contacto: +34 611 499 674<br>
+        Jurisdicci&oacute;n: Servicios digitales internacionales
+      </div>
+    </div>
+    <div class="party">
+      <div class="party-role">Cliente / Beneficiario</div>
+      <div class="party-name"><span class="field empty">[ Nombre o Raz&oacute;n Social ]</span></div>
+      <div class="party-detail">
+        NIF / CIF: <span class="field empty">[ _ _ _ _ _ _ _ _ _ ]</span><br>
+        Direcci&oacute;n: <span class="field empty">[ Direcci&oacute;n fiscal completa ]</span><br>
+        Email: <span class="field empty">[ email@dominio.com ]</span><br>
+        Tel&eacute;fono: <span class="field empty">[ + _ _ _ _ _ _ _ _ _ _ ]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="validity-banner">
+    <span>&#128203; Propuesta aceptada &mdash; Acuerdo vinculante</span>
+    <span>Acuerdo de prestaci&oacute;n de servicios y comprobante interno de pago</span>
+  </div>
+
+  <div class="section" style="margin-top:20px;">
+    <div class="section-title">Detalle de Servicios Contratados</div>
+    <table class="service-table">
+      <thead><tr><th style="width:40%">Servicio</th><th style="width:38%">Descripci&oacute;n</th><th>Importe</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Presencia Web Profesional</strong><small>Dominio propio (1 a&ntilde;o) + alojamiento</small></td>
+          <td style="font-size:9px;">Dise&ntilde;o, desarrollo y publicaci&oacute;n de sitio web profesional. Configuraci&oacute;n t&eacute;cnica, velocidad y adaptaci&oacute;n a todos los dispositivos.</td>
+          <td>Incluido</td>
+        </tr>
+        <tr>
+          <td><strong>Carta Digital con QR</strong><small>Actualizaciones ilimitadas durante el periodo</small></td>
+          <td style="font-size:9px;">Carta digital accesible mediante QR desde cualquier dispositivo. Actualizable en tiempo real sin coste adicional.</td>
+          <td>Incluido</td>
+        </tr>
+        <tr>
+          <td><strong>Google Business &mdash; Ficha Optimizada</strong><small>Fotograf&iacute;a, horarios, categor&iacute;as, keywords</small></td>
+          <td style="font-size:9px;">Configuraci&oacute;n y optimizaci&oacute;n completa del perfil de Google Maps. Descripci&oacute;n orientada a conversi&oacute;n y gesti&oacute;n de categor&iacute;as.</td>
+          <td>Incluido</td>
+        </tr>
+        <tr>
+          <td><strong>Motor de Reservas Online</strong><small>Integrado en la web, sin comisiones externas</small></td>
+          <td style="font-size:9px;">Sistema de reservas accesible desde web y Google. Sin intermediarios ni comisiones por reserva.</td>
+          <td>Incluido</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2">Inversi&oacute;n total &middot; Todo incluido &middot; Sin pagos mensuales ni permanencias</td>
+          <td>250 &euro;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" style="margin-top:18px;">
+    <div class="section-title">Condiciones de Pago</div>
+    <div class="payment-grid">
+      <div class="payment-box">
+        <div class="payment-box-label">Primer pago &mdash; Inicio de proyecto</div>
+        <div class="payment-box-amount">125 <sup>&euro;</sup></div>
+        <div class="payment-box-note">Abonado en el momento de la firma. Activa la producci&oacute;n inmediatamente.</div>
+      </div>
+      <div class="payment-box">
+        <div class="payment-box-label">Segundo pago &mdash; Entrega y activaci&oacute;n</div>
+        <div class="payment-box-amount">125 <sup>&euro;</sup></div>
+        <div class="payment-box-note">Abonado en el momento de la entrega, previo a la transferencia de accesos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:18px;margin-bottom:20px;">
+    <div class="section-title">Plazos de Entrega</div>
+    <div class="delivery-row">
+      <div class="delivery-item">
+        <div class="delivery-icon">&#9889;</div>
+        <div>
+          <div class="delivery-label">Plazo est&aacute;ndar</div>
+          <div class="delivery-value">3 a 5 d&iacute;as h&aacute;biles</div>
+          <div class="delivery-note">Desde recepci&oacute;n del primer pago y materiales necesarios.</div>
+        </div>
+      </div>
+      <div class="delivery-item">
+        <div class="delivery-icon">&#128197;</div>
+        <div>
+          <div class="delivery-label">Plazo m&aacute;ximo con pr&oacute;rroga</div>
+          <div class="delivery-value">Hasta 15 d&iacute;as h&aacute;biles</div>
+          <div class="delivery-note">Cuando el volumen de contenido o ajustes sea elevado. Se comunica con antelaci&oacute;n.</div>
+        </div>
+      </div>
+      <div class="delivery-item">
+        <div class="delivery-icon">&#10003;</div>
+        <div>
+          <div class="delivery-label">Activaci&oacute;n final</div>
+          <div class="delivery-value">Tras 2.&ordm; pago</div>
+          <div class="delivery-note">Transferencia de accesos y dominio confirmado el pago final.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="doc-footer-left">Architect.Sys &middot; hosteleria.architectsys.com &middot; +34 611 499 674</div>
+    <div class="doc-footer-right">P&aacute;gina 1 de 2</div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <div class="doc-header" style="padding:28px 48px 20px;">
+    <div class="brand-mark">
+      <div class="brand-name" style="font-size:16px;">ARCHITECT<span>.SYS</span></div>
+      <div class="brand-sub">Condiciones Generales del Servicio</div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-type">Cl&aacute;usulas y Garant&iacute;as</div>
+      <div class="doc-number" style="font-size:13px;">REF: AS-<span style="color:var(--gold)">[ N&Uacute;MERO ]</span></div>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:22px;">
+    <div class="section-title">T&eacute;rminos y Condiciones del Acuerdo</div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 1 &mdash; Objeto del Contrato</div><div class="clause-title">Alcance Espec&iacute;fico del Servicio</div><div class="clause-body">El presente contrato tiene por objeto exclusivo la prestaci&oacute;n de los servicios digitales descritos en la P&aacute;gina 1. Cualquier servicio adicional, modificaci&oacute;n sustancial, nueva funcionalidad o proyecto diferente requerir&aacute; nueva propuesta y contrato independiente.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 2 &mdash; Naturaleza del Servicio</div><div class="clause-title">Servicio Digital Internacional</div><div class="clause-body">Architect.Sys opera como prestador independiente de servicios digitales, sin establecimiento fijo ni actividad econ&oacute;mica registrada en territorio espa&ntilde;ol. La prestaci&oacute;n se realiza &iacute;ntegramente por medios electr&oacute;nicos. La validez contable, fiscal o deducibilidad del gasto depender&aacute; de la normativa aplicable al cliente y de su asesor&iacute;a.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 3 &mdash; Obligaciones del Prestador</div><div class="clause-title">Compromisos de Architect.Sys</div><div class="clause-body">El prestador se compromete a: (a) ejecutar los servicios con diligencia profesional; (b) respetar los plazos o comunicar variaciones justificadas; (c) entregar acceso completo a todos los activos digitales tras el pago final; (d) mantener confidencialidad; (e) realizar hasta dos rondas de ajustes dentro del alcance contratado.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 4 &mdash; Obligaciones del Cliente</div><div class="clause-title">Compromisos del Beneficiario</div><div class="clause-body">El cliente se compromete a: (a) realizar los pagos en los t&eacute;rminos acordados; (b) facilitar materiales necesarios en tiempo y forma; (c) revisar y comunicar observaciones dentro de los 5 d&iacute;as h&aacute;biles siguientes a cada entrega. El silencio se interpretar&aacute; como aceptaci&oacute;n t&aacute;cita.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 5 &mdash; Garant&iacute;as del Servicio</div><div class="clause-title">Garant&iacute;as y Soporte Post-Entrega</div><div class="clause-body">Architect.Sys garantiza el correcto funcionamiento t&eacute;cnico durante 30 d&iacute;as naturales desde la activaci&oacute;n. Cualquier error t&eacute;cnico imputable al prestador ser&aacute; corregido sin coste. Esta garant&iacute;a no cubre modificaciones solicitadas por el cliente ni fallos de servicios de terceros.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 6 &mdash; Propiedad y Transferencia</div><div class="clause-title">Titularidad de Activos Digitales</div><div class="clause-body">Completado el pago &iacute;ntegro, el cliente adquiere la propiedad completa del dominio y activos digitales desarrollados para su proyecto. Architect.Sys conserva el derecho a mencionarlo como referencia en su portfolio, salvo oposici&oacute;n expresa por escrito.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 7 &mdash; Limitaci&oacute;n de Responsabilidad</div><div class="clause-title">Alcance de la Responsabilidad</div><div class="clause-body">La responsabilidad del prestador queda limitada al importe total abonado. No se responde por p&eacute;rdidas indirectas, lucro cesante, ca&iacute;das de servicios de terceros ni retrasos causados por falta de materiales del cliente.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 8 &mdash; Cancelaci&oacute;n y Reembolso</div><div class="clause-title">Pol&iacute;tica de Cancelaci&oacute;n</div><div class="clause-body">El primer pago no es reembolsable una vez iniciada la producci&oacute;n. Si el cliente cancela antes de la entrega final, no se genera obligaci&oacute;n del segundo pago. Si cancela tras la entrega y antes del segundo pago, no podr&aacute; usar los activos hasta regularizar el pago pendiente.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 9 &mdash; Privacidad y Datos</div><div class="clause-title">Tratamiento de Informaci&oacute;n</div><div class="clause-body">Toda informaci&oacute;n del cliente ser&aacute; tratada con confidencialidad y usada exclusivamente para la prestaci&oacute;n del servicio. No se ceder&aacute;n datos a terceros. Se aplican los principios del RGPD/GDPR.</div></div>
+    <div class="clause"><div class="clause-num">Cl&aacute;usula 10 &mdash; Resoluci&oacute;n de Conflictos</div><div class="clause-title">Jurisdicci&oacute;n y Acuerdo Amistoso</div><div class="clause-body">Las partes se comprometen a resolver discrepancias de forma amistosa en primera instancia. En caso contrario, se someten a mediaci&oacute;n online conforme a los reglamentos de resoluci&oacute;n alternativa de disputas para comercio electr&oacute;nico.</div></div>
+  </div>
+
+  <div class="section" style="margin-top:20px;margin-bottom:20px;">
+    <div class="section-title">Aceptaci&oacute;n y Firma del Acuerdo</div>
+    <div style="background:#F7F7F7;border-radius:6px;padding:12px 16px;margin-bottom:16px;font-size:9.5px;color:var(--mid);border-left:3px solid var(--gold);">
+      La firma o aceptaci&oacute;n expresa &mdash;incluyendo confirmaci&oacute;n por escrito o el pago del primer importe&mdash; implica la aceptaci&oacute;n plena de todas las cl&aacute;usulas aqu&iacute; recogidas por ambas partes.
+    </div>
+    <div class="sig-grid">
+      <div class="sig-block">
+        <div class="sig-label">Por el Prestador &mdash; Architect.Sys</div>
+        <div class="sig-line">
+          <div class="sig-name">Architect.Sys</div>
+          <div class="sig-role">Prestador de Servicios Digitales</div>
+        </div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-label">Por el Cliente &mdash; Beneficiario</div>
+        <div class="sig-line">
+          <div class="sig-name">___________________________</div>
+          <div class="sig-role">Nombre y cargo &middot; Fecha: ________________</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="doc-footer-left">Architect.Sys &middot; hosteleria.architectsys.com &middot; +34 611 499 674</div>
+    <div class="doc-footer-right">P&aacute;gina 2 de 2</div>
+  </div>
+</div>
+
+<div class="toolbar no-print">
+  <button class="btn" onclick="window.print()">&#128438; Imprimir / Guardar PDF</button>
+  <button class="btn btn-sec" onclick="document.querySelector('.toolbar').style.display='none';window.print();document.querySelector('.toolbar').style.display='flex';">&#128196; PDF limpio</button>
+</div>
+<script>
+  window.addEventListener('beforeprint',function(){document.querySelector('.toolbar').style.display='none';});
+  window.addEventListener('afterprint',function(){document.querySelector('.toolbar').style.display='flex';});
+</script>
+</body>
+</html>
